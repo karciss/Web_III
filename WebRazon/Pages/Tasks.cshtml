@@ -1,0 +1,18 @@
+@page
+@model WebRazon.Pages.TasksModel
+@{
+    ViewData["Title"] = "Tareas";
+    Layout = "_Layout";
+}
+
+<div class="text-center">
+    <h1>Redirigiendo a la página de tareas...</h1>
+    <p>Por favor espere mientras le redirigimos a la página principal de tareas.</p>
+</div>
+
+@section Scripts {
+    <script>
+        // Redirect to the main task page
+        window.location.href = "/Index";
+    </script>
+}
