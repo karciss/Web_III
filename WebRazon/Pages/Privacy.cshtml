@@ -3,6 +3,41 @@
 @{
     ViewData["Title"] = "Política de Privacidad";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Utilice esta página para detallar la política de privacidad de su sitio.</p>
+<div class="container-fluid px-4">
+    <h1 class="fs-2 mb-4" style="color: var(--purple-600);"><i class="bi bi-shield-lock me-2" style="color: var(--purple-500);"></i>@ViewData["Title"]</h1>
+
+    <div class="card" style="border-color: var(--purple-200);">
+        <div class="card-header bg-primary">
+            <h5 class="mb-0">Información sobre privacidad</h5>
+        </div>
+        <div class="card-body">
+            <p>Esta página describe las políticas de privacidad del Gestor de Tareas.</p>
+            
+            <div class="mt-4 p-3" style="background-color: var(--purple-100); border-radius: 6px; border-left: 4px solid var(--purple-400);">
+                <h4 class="mt-2" style="color: var(--purple-600);">Información Recopilada</h4>
+                <p>El Gestor de Tareas recopila la siguiente información:</p>
+                <ul>
+                    <li>Datos de tareas y actividades</li>
+                    <li>Información de usuarios para gestión de cuentas</li>
+                    <li>Archivos adjuntos que se hayan subido</li>
+                </ul>
+            </div>
+            
+            <div class="mt-4 p-3" style="background-color: var(--green-100); border-radius: 6px; border-left: 4px solid var(--green-400);">
+                <h4 class="mt-2" style="color: var(--green-600);">Uso de la Información</h4>
+                <p>La información recopilada se utiliza únicamente para:</p>
+                <ul>
+                    <li>Proporcionar funcionalidad completa del gestor de tareas</li>
+                    <li>Mejorar la experiencia de usuario</li>
+                    <li>Mantener un registro de actividades</li>
+                </ul>
+            </div>
+            
+            <div class="mt-4 p-3" style="background-color: var(--purple-100); border-radius: 6px; border-left: 4px solid var(--purple-400);">
+                <h4 class="mt-2" style="color: var(--purple-600);">Contacto</h4>
+                <p>Si tiene preguntas sobre esta política de privacidad, por favor contacte al administrador del sistema.</p>
+            </div>
+        </div>
+    </div>
+</div>

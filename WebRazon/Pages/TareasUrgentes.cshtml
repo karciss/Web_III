@@ -1,0 +1,140 @@
+@page
+@model WebRazon.Pages.TareasUrgentesModel
+@{
+    ViewData["Title"] = "Tareas Urgentes";
+}
+
+<div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fs-2" style="color: var(--purple-600);"><i class="bi bi-exclamation-triangle me-2" style="color: var(--purple-500);"></i>Tareas Urgentes</h1>
+        <div>
+            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#nuevaTareaModal">
+                <i class="bi bi-plus-circle"></i> Nueva Tarea Urgente
+            </button>
+        </div>
+    </div>
+
+    <!-- Lista de Tareas Urgentes -->
+    <div class="card mb-4" style="border-color: var(--purple-300);">
+        <div class="card-header bg-danger">
+            <div class="d-flex justify-content-between align-items-center">
+                <div><i class="bi bi-exclamation-triangle me-2"></i>Lista de Tareas Urgentes</div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="alert" style="background-color: var(--purple-100); border-left: 4px solid var(--purple-500);" role="alert">
+                <i class="bi bi-info-circle me-2" style="color: var(--purple-600);"></i> Estas tareas requieren atención inmediata.
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Título</th>
+                            <th>Fecha de Vencimiento</th>
+                            <th>Tiempo Restante</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var task in Model.UrgentTasks)
+                        {
+                            var daysLeft = (task.DueDate - DateTime.Now).Days;
+                            var hoursLeft = (task.DueDate - DateTime.Now).Hours;
+                            var badgeClass = daysLeft < 0 ? "bg-dark" : (daysLeft == 0 ? "bg-danger" : "bg-warning");
+                            var timeText = daysLeft < 0 ? "Vencida" : 
+                                           daysLeft == 0 ? (hoursLeft <= 0 ? "Hoy (Vence en minutos)" : $"Hoy ({hoursLeft}h)") : 
+                                           $"{daysLeft} día(s)";
+                                           
+                            <tr>
+                                <td>@task.Title</td>
+                                <td>@task.DueDate.ToString("yyyy-MM-dd")</td>
+                                <td>
+                                    <span class="badge @badgeClass">@timeText</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-outline-primary" title="Editar">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-success" title="Completar">
+                                            <i class="bi bi-check-lg"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-info" title="Ver detalles">
+                                            <i class="bi bi-info-circle"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Nueva Tarea -->
+<div class="modal fade" id="nuevaTareaModal" tabindex="-1" aria-labelledby="nuevaTareaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-danger">
+                <h5 class="modal-title" id="nuevaTareaModalLabel">
+                    <i class="bi bi-exclamation-triangle me-2"></i>Agregar Tarea Urgente
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="NewTask.Title" class="form-label">Título de la Tarea</label>
+                                <input asp-for="NewTask.Title" class="form-control" required />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label asp-for="NewTask.Description" class="form-label">Descripción</label>
+                                <textarea asp-for="NewTask.Description" class="form-control" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="NewTask.DueDate" class="form-label">Fecha de Vencimiento</label>
+                                <input asp-for="NewTask.DueDate" type="date" class="form-control" required />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label">Prioridad</label>
+                                <select class="form-select" style="border-color: var(--purple-300);">
+                                    <option value="alta">Alta</option>
+                                    <option value="critica">Crítica</option>
+                                </select>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label">Archivo Adjunto (opcional)</label>
+                                <input type="file" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i> Cancelar
+                </button>
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-plus-lg me-1"></i> Agregar Tarea Urgente
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Código específico para la página de tareas urgentes
+        });
+    </script>
+}

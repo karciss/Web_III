@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace WebRazon.Pages
 {
@@ -17,6 +18,7 @@ namespace WebRazon.Pages
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
+        private List<TaskItem> _allTasks;
 
         public IndexModel(ILogger<IndexModel> logger)
         {
@@ -25,13 +27,16 @@ namespace WebRazon.Pages
 
         public List<TaskItem> Tasks { get; private set; }
 
+        [BindProperty(SupportsGet = true)]
+        public string Filter { get; set; }
+
         [BindProperty]
         public TaskItem NewTask { get; set; }
 
         public void OnGet()
         {
             // Inicializar con tareas de ejemplo - en una aplicación real, esto vendría de una base de datos
-            Tasks = new List<TaskItem>
+            _allTasks = new List<TaskItem>
             {
                 new TaskItem { 
                     Id = 1, 
@@ -53,8 +58,46 @@ namespace WebRazon.Pages
                     Description = "Solucionar los problemas reportados en el inicio de sesión", 
                     DueDate = DateTime.Now.AddDays(1), 
                     Status = "Urgente" 
-                }
+                },
+                new TaskItem { 
+                    Id = 4, 
+                    Title = "Actualizar bibliotecas del proyecto", 
+                    Description = "Actualizar todas las bibliotecas a las últimas versiones", 
+                    DueDate = DateTime.Now.AddDays(7), 
+                    Status = "Pendiente" 
+                },
+                new TaskItem { 
+                    Id = 5, 
+                    Title = "Reunión de planificación", 
+                    Description = "Preparar materiales para la reunión de planificación", 
+                    DueDate = DateTime.Now.AddDays(2), 
+                    Status = "En Progreso" 
+                },
+                new TaskItem { 
+                    Id = 6, 
+                    Title = "Presentación para cliente", 
+                    Description = "Finalizar la presentación para la reunión con el cliente", 
+                    DueDate = DateTime.Now.AddDays(1), 
+                    Status = "Urgente" 
+                },
+                new TaskItem { 
+                    Id = 7, 
+                    Title = "Revisión de diseño UI", 
+                    Description = "Completar la revisión de diseños de interfaz para la app móvil", 
+                    DueDate = DateTime.Now.AddDays(-2), 
+                    Status = "Completada" 
+                },
             };
+
+            // Aplicar filtrado si es necesario
+            if (string.IsNullOrEmpty(Filter) || Filter.Equals("todas", StringComparison.OrdinalIgnoreCase))
+            {
+                Tasks = _allTasks;
+            }
+            else
+            {
+                Tasks = _allTasks.Where(t => t.Status.Equals(Filter, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
         }
 
         public IActionResult OnPost()

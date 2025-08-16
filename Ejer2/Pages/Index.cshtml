@@ -1,0 +1,128 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Gestor de Tareas";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Mis Tareas</h2>
+        <button class="btn btn-primary" style="background-color: #D4B2D8; border-color: #C6A4C6;">
+            <i class="fas fa-plus-circle me-2"></i>Nueva Tarea
+        </button>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th>Fecha de Vencimiento</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var task in Model.Tasks)
+                        {
+                            <tr>
+                                <td>@task.Name</td>
+                                <td>@(task.Description?.Length > 50 ? task.Description.Substring(0, 50) + "..." : task.Description)</td>
+                                <td>
+                                    @task.DueDate.ToString("dd/MM/yyyy")
+                                    @{
+                                        if (task.DueDate.Date < DateTime.Now.Date && task.Status != Ejer2.Models.TaskStatus.Completada && task.Status != Ejer2.Models.TaskStatus.Cancelada)
+                                        {
+                                            <span class="badge bg-danger ms-2">Vencida</span>
+                                        }
+                                        else if (task.DueDate.Date == DateTime.Now.Date && task.Status != Ejer2.Models.TaskStatus.Completada)
+                                        {
+                                            <span class="badge bg-warning ms-2">Hoy</span>
+                                        }
+                                    }
+                                </td>
+                                <td>
+                                    @{
+                                        string badgeClass = task.Status switch
+                                        {
+                                            Ejer2.Models.TaskStatus.Pendiente => "bg-secondary",
+                                            Ejer2.Models.TaskStatus.EnProgreso => "bg-info",
+                                            Ejer2.Models.TaskStatus.Completada => "bg-success",
+                                            Ejer2.Models.TaskStatus.Cancelada => "bg-danger",
+                                            _ => "bg-secondary"
+                                        };
+                                    }
+                                    <span class="badge @badgeClass">@task.Status</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-sm btn-outline-primary" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-success" title="Marcar como completada">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task status summary cards -->
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-secondary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Pendientes</h5>
+                    <p class="card-text fs-2">@Model.Tasks.Count(t => t.Status == Ejer2.Models.TaskStatus.Pendiente)</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">En Progreso</h5>
+                    <p class="card-text fs-2">@Model.Tasks.Count(t => t.Status == Ejer2.Models.TaskStatus.EnProgreso)</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Completadas</h5>
+                    <p class="card-text fs-2">@Model.Tasks.Count(t => t.Status == Ejer2.Models.TaskStatus.Completada)</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-danger mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Canceladas</h5>
+                    <p class="card-text fs-2">@Model.Tasks.Count(t => t.Status == Ejer2.Models.TaskStatus.Cancelada)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function() {
+            // Add hover effect to table rows
+            $('tbody tr').hover(
+                function() { $(this).addClass('table-active'); },
+                function() { $(this).removeClass('table-active'); }
+            );
+        });
+    </script>
+}

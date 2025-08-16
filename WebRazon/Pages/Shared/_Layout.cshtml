@@ -8,70 +8,141 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/WebRazon.styles.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">
-                    <i class="bi bi-check2-square me-2"></i>Gestor de Tareas
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-page="/Index">
-                                <i class="bi bi-list-task me-1"></i>Tareas
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" href="#">
-                                <i class="bi bi-calendar-check me-1"></i>Calendario
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" href="#">
-                                <i class="bi bi-graph-up me-1"></i>Informes
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" asp-area="" asp-page="/Privacy">
-                                <i class="bi bi-shield-lock me-1"></i>Privacidad
-                            </a>
-                        </li>
+    <!-- Barra de navegación superior -->
+    <nav class="navbar navbar-expand navbar-dark bg-primary navbar-fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" asp-area="" asp-page="/Index">
+                <i class="bi bi-check2-square me-2" style="color: var(--green-300);"></i>Gestor de Tareas
+            </a>
+            
+            <!-- Botón de perfil a la derecha -->
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item me-2">
+                    <button class="navbar-toggler-sidebar btn btn-outline-light" id="sidebar-toggle">
+                        <i class="bi bi-list"></i>
+                    </button>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle" style="color: var(--green-500);"></i> Perfil
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" style="border: 1px solid var(--purple-200);">
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-gear" style="color: var(--purple-500);"></i> Configuración</a></li>
+                        <li><hr class="dropdown-divider" style="border-color: var(--green-200);"></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right" style="color: var(--purple-500);"></i> Cerrar Sesión</a></li>
                     </ul>
-                    <div class="d-flex">
-                        <div class="btn-group">
-                            <button class="btn btn-light btn-sm">
-                                <i class="bi bi-person-circle me-1"></i>Perfil
-                            </button>
-                            <button class="btn btn-outline-light btn-sm">
-                                <i class="bi bi-box-arrow-right me-1"></i>Cerrar Sesión
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Sidebar Vertical -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <i class="bi bi-list-task me-2" style="color: var(--purple-600);"></i> Categorías
+        </div>
+        <ul class="navbar-nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["Page"].ToString() == "/Index" ? "active" : "")" asp-area="" asp-page="/Index">
+                    <i class="bi bi-house-door"></i> Inicio
+                </a>
+            </li>
+            <div class="separator"></div>
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["Page"].ToString() == "/TareasPendientes" ? "active" : "")" asp-area="" asp-page="/TareasPendientes">
+                    <i class="bi bi-hourglass"></i> Tareas Pendientes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["Page"].ToString() == "/TareasEnProgreso" ? "active" : "")" asp-area="" asp-page="/TareasEnProgreso">
+                    <i class="bi bi-arrow-repeat"></i> En Progreso
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["Page"].ToString() == "/TareasUrgentes" ? "active" : "")" asp-area="" asp-page="/TareasUrgentes">
+                    <i class="bi bi-exclamation-triangle"></i> Urgentes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="bi bi-check-circle"></i> Completadas
+                </a>
+            </li>
+            <div class="separator"></div>
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["Page"].ToString() == "/Privacy" ? "active" : "")" asp-area="" asp-page="/Privacy">
+                    <i class="bi bi-shield-lock"></i> Privacidad
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="content-wrapper" id="content">
+        <div class="container">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
     </div>
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2025 - Gestor de Tareas - <a asp-area="" asp-page="/Privacy">Privacidad</a>
+            &copy; 2025 - Gestor de Tareas - <a asp-area="" asp-page="/Privacy" style="color: var(--purple-600);">Privacidad</a>
         </div>
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    
+    <script>
+        // JavaScript para controlar la visibilidad del sidebar
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebar = document.getElementById('sidebar');
+            const content = document.getElementById('content');
+            
+            // Verificar si el sidebar debe estar colapsado en dispositivos móviles
+            function checkWidth() {
+                if (window.innerWidth < 768) {
+                    sidebar.classList.add('collapsed');
+                    content.classList.add('expanded');
+                } else {
+                    sidebar.classList.remove('collapsed');
+                    content.classList.remove('expanded');
+                }
+            }
+            
+            // Ejecutar al cargar
+            checkWidth();
+            
+            // Ejecutar al cambiar el tamaño de la ventana
+            window.addEventListener('resize', checkWidth);
+            
+            // Toggle del sidebar
+            sidebarToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('collapsed');
+                content.classList.toggle('expanded');
+            });
+
+            // Marcar el enlace activo en el sidebar
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

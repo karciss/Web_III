@@ -1,16 +1,99 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Gestor de Tareas";
+    ViewData["Title"] = "Lista de Tareas";
 }
 
-<div class="container">
-    <h1 class="mb-4">Gestor de Tareas</h1>
+<div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fs-2" style="color: var(--purple-600);">Panel de Tareas</h1>
+        <div>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#nuevaTareaModal">
+                <i class="bi bi-plus-circle"></i> Nueva Tarea
+            </button>
+        </div>
+    </div>
 
-    <!-- Task List Section -->
-    <div class="card mb-4">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0"><i class="bi bi-list-task me-2"></i>Mis Tareas</h5>
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card mb-4">
+                <div class="card-body bg-primary">
+                    <div class="d-flex justify-content-between">
+                        <div>Tareas Totales</div>
+                        <div><i class="bi bi-list-task fs-4"></i></div>
+                    </div>
+                    <div class="fs-2">@Model.Tasks.Count</div>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between" style="background-color: var(--purple-100);">
+                    <a class="small stretched-link" href="#" style="color: var(--purple-600);">Ver Detalles</a>
+                    <div class="small"><i class="bi bi-chevron-right" style="color: var(--purple-600);"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card mb-4">
+                <div class="card-body bg-warning">
+                    <div class="d-flex justify-content-between">
+                        <div>En Progreso</div>
+                        <div><i class="bi bi-arrow-repeat fs-4"></i></div>
+                    </div>
+                    <div class="fs-2">@Model.Tasks.Count(t => t.Status == "En Progreso")</div>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between" style="background-color: var(--green-100);">
+                    <a class="small stretched-link" asp-page="/TareasEnProgreso" style="color: var(--green-600);">Ver Detalles</a>
+                    <div class="small"><i class="bi bi-chevron-right" style="color: var(--green-600);"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card mb-4">
+                <div class="card-body bg-danger">
+                    <div class="d-flex justify-content-between">
+                        <div>Urgentes</div>
+                        <div><i class="bi bi-exclamation-triangle fs-4"></i></div>
+                    </div>
+                    <div class="fs-2">@Model.Tasks.Count(t => t.Status == "Urgente")</div>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between" style="background-color: var(--purple-100);">
+                    <a class="small stretched-link" asp-page="/TareasUrgentes" style="color: var(--purple-600);">Ver Detalles</a>
+                    <div class="small"><i class="bi bi-chevron-right" style="color: var(--purple-600);"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card mb-4">
+                <div class="card-body bg-success">
+                    <div class="d-flex justify-content-between">
+                        <div>Completadas</div>
+                        <div><i class="bi bi-check-circle fs-4"></i></div>
+                    </div>
+                    <div class="fs-2">@Model.Tasks.Count(t => t.Status == "Completada")</div>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between" style="background-color: var(--green-100);">
+                    <a class="small stretched-link" href="#" style="color: var(--green-600);">Ver Detalles</a>
+                    <div class="small"><i class="bi bi-chevron-right" style="color: var(--green-600);"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Tareas -->
+    <div class="card mb-4" style="border: 1px solid var(--purple-200);">
+        <div class="card-header bg-primary">
+            <div class="d-flex justify-content-between align-items-center">
+                <div><i class="bi bi-list-task me-2"></i>Mis Tareas</div>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-funnel"></i> Filtrar
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="filterDropdown" style="border: 1px solid var(--green-200);">
+                        <li><a class="dropdown-item" href="#">Pendientes</a></li>
+                        <li><a class="dropdown-item" href="#">En Progreso</a></li>
+                        <li><a class="dropdown-item" href="#">Urgentes</a></li>
+                        <li><a class="dropdown-item" href="#">Completadas</a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -18,7 +101,6 @@
                     <thead>
                         <tr>
                             <th>Título</th>
-                            <th>Descripción</th>
                             <th>Fecha de Vencimiento</th>
                             <th>Estado</th>
                             <th>Acciones</th>
@@ -29,28 +111,27 @@
                         {
                             <tr>
                                 <td>@task.Title</td>
-                                <td>@task.Description</td>
                                 <td>@task.DueDate.ToString("yyyy-MM-dd")</td>
                                 <td>
                                     <span class="badge @(task.Status == "Urgente" ? "bg-danger" : 
-                                                       task.Status == "En Progreso" ? "bg-warning" : 
-                                                       task.Status == "Completada" ? "bg-success" : "bg-info")">
-                                        @(task.Status == "Urgent" ? "Urgente" : 
-                                          task.Status == "In Progress" ? "En Progreso" : 
-                                          task.Status == "Completed" ? "Completada" : 
-                                          task.Status == "Pending" ? "Pendiente" : task.Status)
+                                                        task.Status == "En Progreso" ? "bg-warning" : 
+                                                        task.Status == "Completada" ? "bg-success" : "bg-info")">
+                                        @task.Status
                                     </span>
                                 </td>
                                 <td>
                                     <div class="btn-group">
-                                        <button class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-pencil-square"></i> Editar
+                                        <button class="btn btn-sm btn-outline-primary" title="Editar">
+                                            <i class="bi bi-pencil-square"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-outline-success">
-                                            <i class="bi bi-check-lg"></i> Completar
+                                        <button class="btn btn-sm btn-outline-success" title="Completar">
+                                            <i class="bi bi-check-lg"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-outline-danger">
-                                            <i class="bi bi-trash"></i> Eliminar
+                                        <button class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-info" title="Ver detalles">
+                                            <i class="bi bi-info-circle"></i>
                                         </button>
                                     </div>
                                 </td>
@@ -61,67 +142,72 @@
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Add New Task Section -->
-    <div class="card">
-        <div class="card-header bg-success text-white">
-            <h5 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Agregar Nueva Tarea</h5>
-        </div>
-        <div class="card-body">
-            <form method="post">
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <div class="form-group mb-3">
-                            <label asp-for="NewTask.Title" class="form-label">Título de la Tarea</label>
-                            <input asp-for="NewTask.Title" class="form-control" required />
+<!-- Modal para Nueva Tarea -->
+<div class="modal fade" id="nuevaTareaModal" tabindex="-1" aria-labelledby="nuevaTareaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <h5 class="modal-title" id="nuevaTareaModalLabel">
+                    <i class="bi bi-plus-circle me-2"></i>Agregar Nueva Tarea
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="NewTask.Title" class="form-label">Título de la Tarea</label>
+                                <input asp-for="NewTask.Title" class="form-control" required />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label asp-for="NewTask.Description" class="form-label">Descripción</label>
+                                <textarea asp-for="NewTask.Description" class="form-control" rows="3"></textarea>
+                            </div>
                         </div>
-                        <div class="form-group mb-3">
-                            <label asp-for="NewTask.Description" class="form-label">Descripción</label>
-                            <textarea asp-for="NewTask.Description" class="form-control" rows="3"></textarea>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label asp-for="NewTask.DueDate" class="form-label">Fecha de Vencimiento</label>
+                                <input asp-for="NewTask.DueDate" type="date" class="form-control" required />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label asp-for="NewTask.Status" class="form-label">Estado</label>
+                                <select asp-for="NewTask.Status" class="form-select">
+                                    <option value="Pendiente">Pendiente</option>
+                                    <option value="En Progreso">En Progreso</option>
+                                    <option value="Urgente">Urgente</option>
+                                    <option value="Completada">Completada</option>
+                                </select>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label">Archivo Adjunto (opcional)</label>
+                                <input type="file" class="form-control" />
+                                <div class="form-text">Sube cualquier archivo relevante para esta tarea</div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group mb-3">
-                            <label asp-for="NewTask.DueDate" class="form-label">Fecha de Vencimiento</label>
-                            <input asp-for="NewTask.DueDate" type="date" class="form-control" required />
-                        </div>
-                        <div class="form-group mb-3">
-                            <label asp-for="NewTask.Status" class="form-label">Estado</label>
-                            <select asp-for="NewTask.Status" class="form-select">
-                                <option value="Pendiente">Pendiente</option>
-                                <option value="En Progreso">En Progreso</option>
-                                <option value="Urgente">Urgente</option>
-                                <option value="Completada">Completada</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group mb-3">
-                            <label class="form-label">Archivo Adjunto (opcional)</label>
-                            <input type="file" class="form-control" />
-                            <div class="form-text">Sube cualquier archivo relevante para esta tarea</div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 d-flex align-items-end">
-                        <button type="submit" class="btn btn-success me-2">
-                            <i class="bi bi-plus-lg me-1"></i> Agregar Tarea
-                        </button>
-                        <button type="reset" class="btn btn-outline-secondary">
-                            <i class="bi bi-x-circle me-1"></i> Limpiar
-                        </button>
-                    </div>
-                </div>
-            </form>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i> Cancelar
+                </button>
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-plus-lg me-1"></i> Agregar Tarea
+                </button>
+            </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
     <script>
-        // Esta sección contendría JavaScript del lado del cliente 
-        // Por ahora, está vacía ya que esto es solo una implementación de UI
+        // Código JavaScript para manejar filtros y otras interacciones
+        document.addEventListener('DOMContentLoaded', function() {
+            // Aquí se puede añadir la lógica para filtrar las tareas
+            // cuando se haga clic en los enlaces del menú lateral
+        });
     </script>
 }
