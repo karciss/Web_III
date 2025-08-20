@@ -23,7 +23,6 @@ namespace WebRazon.Pages
 
         public void OnGet()
         {
-            // Inicializar con tareas en progreso de ejemplo
             TareasEnProgreso = new List<Tarea>
             {
                 new Tarea { 
@@ -43,8 +42,7 @@ namespace WebRazon.Pages
 
         public IActionResult OnPost()
         {
-            // Esto normalmente guardaría la tarea en una base de datos
-            // Para esta implementación de solo UI, simplemente redirigimos de vuelta a la página
+            
             return RedirectToPage();
         }
     }

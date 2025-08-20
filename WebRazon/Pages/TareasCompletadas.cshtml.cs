@@ -20,11 +20,9 @@ namespace WebRazon.Pages
 
         public void OnGet()
         {
-            // Obtener todas las tareas completadas del singleton estático en IndexModel
             var todasLasTareas = ObtenerTodasLasTareas();
             TareasCompletadas = todasLasTareas.Where(t => t.Estado == "Completada").ToList();
             
-            // Si no hay tareas desde el IndexModel, usar datos de ejemplo
             if (TareasCompletadas.Count == 0)
             {
                 TareasCompletadas = new List<Tarea>
@@ -40,11 +38,9 @@ namespace WebRazon.Pages
             }
         }
 
-        // Método auxiliar para obtener todas las tareas de IndexModel
         private List<Tarea> ObtenerTodasLasTareas()
         {
-            // Usar reflexión para acceder al campo estático privado _tareas de IndexModel
-            // Esto es un enfoque temporal, en una aplicación real usaríamos un servicio compartido o repositorio
+            
             var indexModelType = typeof(IndexModel);
             var allTasksField = indexModelType.GetField("_tareas", 
                 System.Reflection.BindingFlags.NonPublic | 

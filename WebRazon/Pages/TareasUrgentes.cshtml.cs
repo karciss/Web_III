@@ -49,8 +49,7 @@ namespace WebRazon.Pages
 
         public IActionResult OnPost()
         {
-            // Esto normalmente guardaría la tarea urgente en una base de datos
-            // Para esta implementación de solo UI, simplemente redirigimos de vuelta a la página
+            
             return RedirectToPage();
         }
     }

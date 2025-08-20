@@ -32,7 +32,6 @@
     </header>
     
     <div class="main-container">
-        <!-- Enhanced Vertical Navigation Bar -->
         <nav class="vertical-navbar" id="sidebar">
             <div class="container px-3">
                 <a class="navbar-brand" asp-area="" asp-page="/Index">
@@ -113,7 +112,6 @@
             </div>
         </nav>
 
-        <!-- Main Content -->
         <div class="content-with-sidebar">
             <div class="container py-4">
                 <main role="main">
@@ -151,7 +149,6 @@
                 }
             });
             
-            // Add subtle animations to nav items
             const navItems = document.querySelectorAll('.nav-item');
             navItems.forEach((item, index) => {
                 item.style.animation = `fadeInRight 0.3s ease forwards ${0.1 + index * 0.05}s`;
