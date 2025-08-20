@@ -1,0 +1,148 @@
+@page
+@model WebRazon.Pages.TareasCompletadasModel
+@{
+    ViewData["Title"] = "Tareas Completadas";
+}
+
+<link rel="stylesheet" href="~/css/custom-task-pages.css" />
+<link rel="stylesheet" href="~/css/modal-notifications.css" />
+
+<div class="tasks-page completed-task-theme">
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="bi bi-check-circle"></i>
+            Tareas Completadas
+        </h1>
+    </div>
+
+    <!-- Lista de Tareas Completadas -->
+    <div class="tasks-card">
+        <div class="tasks-card-header">
+            <span><i class="bi bi-check-circle"></i>Lista de Tareas Completadas</span>
+        </div>
+        <div class="tasks-card-body">
+            @if (Model.TareasCompletadas.Any())
+            {
+                <table class="tasks-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Fecha de Vencimiento</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var tarea in Model.TareasCompletadas)
+                        {
+                            <tr class="task-row" data-task-id="@tarea.IdTarea">
+                                <td>@tarea.NombreTarea</td>
+                                <td>@tarea.FechaVencimiento.ToString("yyyy-MM-dd")</td>
+                                <td>
+                                    <div class="actions-group">
+                                        <button class="btn btn-sm btn-outline-primary btn-edit-task" title="Editar" data-task-id="@tarea.IdTarea">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger btn-delete-task" title="Eliminar" data-task-id="@tarea.IdTarea">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="empty-tasks-message">
+                    <i class="bi bi-info-circle"></i>
+                    <span>No hay tareas completadas en este momento.</span>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Contenedor para notificaciones -->
+<div class="notifications-container" id="notificationsContainer"></div>
+
+<!-- Token anti-falsificación para solicitudes AJAX -->
+<form id="__AjaxAntiForgeryForm" method="post" style="display: none;">
+    @Html.AntiForgeryToken()
+</form>
+
+@section Scripts {
+    <script src="~/js/modal-handler.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Eliminar tarea
+            document.querySelectorAll('.btn-delete-task').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const taskId = parseInt(this.getAttribute('data-task-id'));
+                    if (confirm('¿Estás seguro de que quieres eliminar esta tarea?')) {
+                        deleteTask(taskId);
+                    }
+                });
+            });
+            
+            async function deleteTask(taskId) {
+                try {
+                    const row = document.querySelector(`.task-row[data-task-id="${taskId}"]`);
+                    row.classList.add('removing');
+                    
+                    const response = await fetch(`/Index?handler=EliminarTarea&id=${taskId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        setTimeout(() => {
+                            row.remove();
+                            if (document.querySelectorAll('.tasks-table tbody tr').length === 0) {
+                                location.reload();
+                            }
+                        }, 500);
+                        showCustomNotification('Tarea eliminada correctamente', 'success');
+                    } else {
+                        showCustomNotification('Error al eliminar la tarea', 'danger');
+                        row.classList.remove('removing');
+                    }
+                } catch (error) {
+                    console.error('Error al eliminar la tarea:', error);
+                    showCustomNotification('Error al eliminar la tarea', 'danger');
+                }
+            }
+            
+            // Función para mostrar notificaciones personalizadas
+            function showCustomNotification(message, type = 'success') {
+                const container = document.getElementById('notificationsContainer');
+                
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                
+                notification.innerHTML = `
+                    <span>${message}</span>
+                    <button type="button" class="notification-close">&times;</button>
+                `;
+                
+                container.appendChild(notification);
+                
+                // Manejar el cierre de la notificación
+                const closeBtn = notification.querySelector('.notification-close');
+                closeBtn.addEventListener('click', function() {
+                    notification.style.opacity = '0';
+                    setTimeout(() => notification.remove(), 300);
+                });
+                
+                // Auto-ocultar después de 3 segundos
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
+        });
+    </script>
+}

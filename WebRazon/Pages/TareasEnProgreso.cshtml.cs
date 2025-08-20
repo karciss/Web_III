@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using WebRazon.Models;
 
 namespace WebRazon.Pages
 {
@@ -15,29 +16,27 @@ namespace WebRazon.Pages
             _logger = logger;
         }
 
-        public List<TaskItem> InProgressTasks { get; private set; }
+        public List<Tarea> TareasEnProgreso { get; private set; }
 
         [BindProperty]
-        public TaskItem NewTask { get; set; }
+        public Tarea NuevaTarea { get; set; }
 
         public void OnGet()
         {
             // Inicializar con tareas en progreso de ejemplo
-            InProgressTasks = new List<TaskItem>
+            TareasEnProgreso = new List<Tarea>
             {
-                new TaskItem { 
-                    Id = 2, 
-                    Title = "Revisar documentación", 
-                    Description = "Revisar y actualizar la documentación de la API", 
-                    DueDate = DateTime.Now.AddDays(5), 
-                    Status = "En Progreso" 
+                new Tarea { 
+                    IdTarea = 2, 
+                    NombreTarea = "Revisar documentación", 
+                    FechaVencimiento = DateTime.Now.AddDays(5), 
+                    Estado = "En Progreso" 
                 },
-                new TaskItem { 
-                    Id = 5, 
-                    Title = "Reunión de planificación", 
-                    Description = "Preparar materiales para la reunión de planificación", 
-                    DueDate = DateTime.Now.AddDays(2), 
-                    Status = "En Progreso" 
+                new Tarea { 
+                    IdTarea = 5, 
+                    NombreTarea = "Reunión de planificación", 
+                    FechaVencimiento = DateTime.Now.AddDays(2), 
+                    Estado = "En Progreso" 
                 }
             };
         }

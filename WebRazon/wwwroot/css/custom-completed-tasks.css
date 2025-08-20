@@ -1,0 +1,371 @@
+/* Estilos personalizados para la página de tareas completadas sin dependencia de Bootstrap */
+:root {
+  /* Tonalidades pastel para tareas completadas */
+  --pastel-mint-100: #e8f7f5;
+  --pastel-mint-200: #d1efe9;
+  --pastel-mint-300: #bbe7dd;
+  --pastel-mint-400: #a3dfd0;
+  --pastel-mint-500: #8bd7c3;
+  --pastel-mint-600: #70c7af;
+  
+  /* Colores neutros */
+  --neutral-100: #f8f9fa;
+  --neutral-200: #e9ecef;
+  --neutral-300: #dee2e6;
+  --neutral-400: #ced4da;
+  --neutral-500: #adb5bd;
+  --neutral-600: #6c757d;
+  --neutral-700: #495057;
+  --neutral-800: #343a40;
+  --neutral-900: #212529;
+  
+  /* Colores de texto */
+  --text-dark: #3c3c54;
+  --text-light: #ffffff;
+}
+
+/* Estilos básicos */
+.tasks-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Poppins', sans-serif;
+  color: var(--text-dark);
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--pastel-mint-300);
+}
+
+.page-title {
+  font-size: 1.75rem;
+  font-weight: 500;
+  color: var(--pastel-mint-600);
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.page-title i {
+  margin-right: 10px;
+  color: var(--pastel-mint-500);
+}
+
+/* Tarjeta de tareas */
+.tasks-card {
+  background-color: var(--neutral-100);
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  border: 1px solid var(--pastel-mint-300);
+}
+
+.tasks-card-header {
+  background-color: var(--pastel-mint-400);
+  padding: 15px 20px;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tasks-card-header i {
+  margin-right: 10px;
+}
+
+.tasks-card-body {
+  padding: 20px;
+  background-color: var(--pastel-mint-100);
+}
+
+/* Tabla de tareas */
+.tasks-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tasks-table th {
+  text-align: left;
+  padding: 12px 15px;
+  border-bottom: 2px solid var(--pastel-mint-300);
+  font-weight: 600;
+  color: var(--pastel-mint-600);
+}
+
+.tasks-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--pastel-mint-200);
+}
+
+.tasks-table tr:hover {
+  background-color: rgba(211, 239, 233, 0.4);
+}
+
+/* Mensaje cuando no hay tareas */
+.empty-tasks-message {
+  background-color: var(--pastel-mint-100);
+  border-left: 4px solid var(--pastel-mint-500);
+  padding: 15px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.empty-tasks-message i {
+  margin-right: 10px;
+  color: var(--pastel-mint-600);
+  font-size: 1.25rem;
+}
+
+/* Botones de acción */
+.actions-group {
+  display: flex;
+  gap: 5px;
+}
+
+.btn {
+  background-color: transparent;
+  border: 1px solid;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 6px 10px;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn i {
+  font-size: 1rem;
+}
+
+.btn-outline-primary {
+  color: #6f42c1;
+  border-color: #6f42c1;
+}
+
+.btn-outline-primary:hover {
+  background-color: #6f42c1;
+  color: white;
+}
+
+.btn-outline-danger {
+  color: #dc3545;
+  border-color: #dc3545;
+}
+
+.btn-outline-danger:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-outline-info {
+  color: var(--pastel-mint-600);
+  border-color: var(--pastel-mint-400);
+}
+
+.btn-outline-info:hover {
+  background-color: var(--pastel-mint-400);
+  color: var(--text-dark);
+}
+
+/* Modal personalizado */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-overlay.show {
+  display: flex;
+}
+
+.modal {
+  background-color: white;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  animation: modalFadeIn 0.3s ease forwards;
+  overflow: hidden;
+}
+
+.modal-header {
+  background-color: var(--pastel-mint-300);
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--neutral-700);
+  transition: color 0.2s;
+}
+
+.modal-close:hover {
+  color: var(--neutral-900);
+}
+
+.modal-body {
+  padding: 20px;
+  background-color: var(--pastel-mint-100);
+}
+
+.modal-footer {
+  padding: 15px 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  background-color: var(--pastel-mint-100);
+  border-top: 1px solid var(--pastel-mint-200);
+}
+
+.btn-secondary {
+  background-color: var(--neutral-500);
+  color: white;
+  border-color: var(--neutral-500);
+}
+
+.btn-secondary:hover {
+  background-color: var(--neutral-600);
+  border-color: var(--neutral-600);
+}
+
+.detail-group {
+  margin-bottom: 15px;
+}
+
+.detail-label {
+  font-weight: 600;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.detail-value {
+  margin: 0;
+}
+
+.detail-title {
+  font-size: 1.25rem;
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: var(--pastel-mint-600);
+}
+
+/* Notificaciones personalizadas */
+.notifications-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.notification {
+  background-color: white;
+  border-radius: 4px;
+  padding: 15px 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 300px;
+  max-width: 450px;
+  animation: notificationSlideIn 0.3s forwards;
+}
+
+.notification.success {
+  border-left: 4px solid var(--pastel-mint-500);
+}
+
+.notification.danger {
+  border-left: 4px solid #dc3545;
+}
+
+.notification-close {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: var(--neutral-600);
+  margin-left: 10px;
+}
+
+/* Animaciones */
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes notificationSlideIn {
+  from { opacity: 0; transform: translateX(100px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Transiciones para la eliminación de filas */
+.task-row {
+  transition: opacity 0.5s, transform 0.5s;
+}
+
+.task-row.removing {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .tasks-table {
+    display: block;
+    overflow-x: auto;
+  }
+  
+  .page-title {
+    font-size: 1.5rem;
+  }
+  
+  .tasks-card-header, .tasks-card-body {
+    padding: 15px;
+  }
+}
+
+@media (max-width: 576px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .tasks-table th, .tasks-table td {
+    padding: 10px;
+  }
+}

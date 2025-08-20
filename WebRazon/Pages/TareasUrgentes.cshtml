@@ -4,66 +4,90 @@
     ViewData["Title"] = "Tareas Urgentes";
 }
 
-<div class="container-fluid px-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="fs-2" style="color: var(--purple-600);"><i class="bi bi-exclamation-triangle me-2" style="color: var(--purple-500);"></i>Tareas Urgentes</h1>
-        <div>
-            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#nuevaTareaModal">
-                <i class="bi bi-plus-circle"></i> Nueva Tarea Urgente
-            </button>
-        </div>
+<link rel="stylesheet" href="~/css/custom-task-pages.css" />
+<link rel="stylesheet" href="~/css/modal-notifications.css" />
+
+<style>
+    .time-badge {
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    
+    .time-badge.expired {
+        background-color: #343a40;
+        color: white;
+    }
+    
+    .time-badge.today {
+        background-color: var(--urgente-500);
+        color: var(--text-dark);
+    }
+    
+    .time-badge.soon {
+        background-color: var(--urgente-300);
+        color: var(--text-dark);
+    }
+</style>
+
+<div class="tasks-page urgent-task-theme">
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="bi bi-exclamation-triangle"></i>
+            Tareas Urgentes
+        </h1>
+        <button class="new-task-btn" data-modal-target="nuevaTareaModal">
+            <i class="bi bi-plus-circle"></i> Nueva Tarea Urgente
+        </button>
     </div>
 
     <!-- Lista de Tareas Urgentes -->
-    <div class="card mb-4" style="border-color: var(--purple-300);">
-        <div class="card-header bg-danger">
-            <div class="d-flex justify-content-between align-items-center">
-                <div><i class="bi bi-exclamation-triangle me-2"></i>Lista de Tareas Urgentes</div>
-            </div>
+    <div class="tasks-card">
+        <div class="tasks-card-header">
+            <span><i class="bi bi-exclamation-triangle"></i>Lista de Tareas Urgentes</span>
         </div>
-        <div class="card-body">
-            <div class="alert" style="background-color: var(--purple-100); border-left: 4px solid var(--purple-500);" role="alert">
-                <i class="bi bi-info-circle me-2" style="color: var(--purple-600);"></i> Estas tareas requieren atención inmediata.
+        <div class="tasks-card-body">
+            <div class="empty-tasks-message" style="margin-bottom: 20px;">
+                <i class="bi bi-info-circle"></i>
+                <span>Estas tareas requieren atención inmediata.</span>
             </div>
-            <div class="table-responsive">
-                <table class="table table-hover">
+            
+            @if (Model.TareasUrgentes.Any())
+            {
+                <table class="tasks-table">
                     <thead>
                         <tr>
-                            <th>Título</th>
+                            <th>Nombre</th>
                             <th>Fecha de Vencimiento</th>
                             <th>Tiempo Restante</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var task in Model.UrgentTasks)
+                        @foreach (var tarea in Model.TareasUrgentes)
                         {
-                            var daysLeft = (task.DueDate - DateTime.Now).Days;
-                            var hoursLeft = (task.DueDate - DateTime.Now).Hours;
-                            var badgeClass = daysLeft < 0 ? "bg-dark" : (daysLeft == 0 ? "bg-danger" : "bg-warning");
+                            var daysLeft = (tarea.FechaVencimiento - DateTime.Now).Days;
+                            var hoursLeft = (tarea.FechaVencimiento - DateTime.Now).Hours;
+                            var timeClass = daysLeft < 0 ? "expired" : (daysLeft == 0 ? "today" : "soon");
                             var timeText = daysLeft < 0 ? "Vencida" : 
-                                           daysLeft == 0 ? (hoursLeft <= 0 ? "Hoy (Vence en minutos)" : $"Hoy ({hoursLeft}h)") : 
-                                           $"{daysLeft} día(s)";
-                                           
-                            <tr>
-                                <td>@task.Title</td>
-                                <td>@task.DueDate.ToString("yyyy-MM-dd")</td>
+                                        daysLeft == 0 ? (hoursLeft <= 0 ? "Hoy (Vence en minutos)" : $"Hoy ({hoursLeft}h)") : 
+                                        $"{daysLeft} día(s)";
+                            
+                            <tr class="task-row" data-task-id="@tarea.IdTarea">
+                                <td>@tarea.NombreTarea</td>
+                                <td>@tarea.FechaVencimiento.ToString("yyyy-MM-dd")</td>
                                 <td>
-                                    <span class="badge @badgeClass">@timeText</span>
+                                    <span class="time-badge @timeClass">@timeText</span>
                                 </td>
                                 <td>
-                                    <div class="btn-group">
-                                        <button class="btn btn-sm btn-outline-primary" title="Editar">
+                                    <div class="actions-group">
+                                        <button class="btn btn-sm btn-outline-primary btn-edit-task" title="Editar"
+                                               data-task-id="@tarea.IdTarea" data-modal-target="editarTareaModal">
                                             <i class="bi bi-pencil-square"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-outline-success" title="Completar">
-                                            <i class="bi bi-check-lg"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                        <button class="btn btn-sm btn-outline-danger btn-delete-task" title="Eliminar" data-task-id="@tarea.IdTarea">
                                             <i class="bi bi-trash"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-info" title="Ver detalles">
-                                            <i class="bi bi-info-circle"></i>
                                         </button>
                                     </div>
                                 </td>
@@ -71,70 +95,328 @@
                         }
                     </tbody>
                 </table>
-            </div>
+            }
+            else
+            {
+                <div class="empty-tasks-message" style="margin-top: 20px;">
+                    <i class="bi bi-check-circle"></i>
+                    <span>No hay tareas urgentes en este momento. ¡Buen trabajo!</span>
+                </div>
+            }
         </div>
     </div>
 </div>
 
 <!-- Modal para Nueva Tarea -->
-<div class="modal fade" id="nuevaTareaModal" tabindex="-1" aria-labelledby="nuevaTareaModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header bg-danger">
-                <h5 class="modal-title" id="nuevaTareaModalLabel">
-                    <i class="bi bi-exclamation-triangle me-2"></i>Agregar Tarea Urgente
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form method="post">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label asp-for="NewTask.Title" class="form-label">Título de la Tarea</label>
-                                <input asp-for="NewTask.Title" class="form-control" required />
-                            </div>
-                            <div class="form-group mb-3">
-                                <label asp-for="NewTask.Description" class="form-label">Descripción</label>
-                                <textarea asp-for="NewTask.Description" class="form-control" rows="3"></textarea>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label asp-for="NewTask.DueDate" class="form-label">Fecha de Vencimiento</label>
-                                <input asp-for="NewTask.DueDate" type="date" class="form-control" required />
-                            </div>
-                            <div class="form-group mb-3">
-                                <label class="form-label">Prioridad</label>
-                                <select class="form-select" style="border-color: var(--purple-300);">
-                                    <option value="alta">Alta</option>
-                                    <option value="critica">Crítica</option>
-                                </select>
-                            </div>
-                            <div class="form-group mb-3">
-                                <label class="form-label">Archivo Adjunto (opcional)</label>
-                                <input type="file" class="form-control" />
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle me-1"></i> Cancelar
-                </button>
-                <button type="submit" class="btn btn-danger">
-                    <i class="bi bi-plus-lg me-1"></i> Agregar Tarea Urgente
-                </button>
-            </div>
+<div id="nuevaTareaModal" class="modal-overlay">
+    <div class="modal" style="max-width: 500px;">
+        <div class="modal-header">
+            <h2 class="modal-title"><i class="bi bi-exclamation-triangle me-2"></i>Agregar Tarea Urgente</h2>
+            <button type="button" class="modal-close" data-modal-close="nuevaTareaModal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="newTaskForm">
+                <div class="detail-group">
+                    <label class="detail-label" for="taskName">Nombre de la Tarea</label>
+                    <input id="taskName" name="NombreTarea" class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" required />
+                    <div class="invalid-feedback" style="color: red; font-size: 0.8rem; margin-top: 5px; display: none;">El nombre es obligatorio</div>
+                </div>
+                <div class="detail-group">
+                    <label class="detail-label" for="taskDueDate">Fecha de Vencimiento</label>
+                    <input id="taskDueDate" name="FechaVencimiento" type="date" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" required />
+                    <div class="invalid-feedback" style="color: red; font-size: 0.8rem; margin-top: 5px; display: none;">La fecha de vencimiento es obligatoria</div>
+                </div>
+                <input type="hidden" id="taskStatus" name="Estado" value="Urgente" />
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-cancel-modal" data-modal-close="nuevaTareaModal">Cancelar</button>
+            <button type="button" class="btn new-task-btn" id="btnSaveTask" style="border: none;">
+                <i class="bi bi-plus-lg"></i> Agregar Tarea Urgente
+            </button>
         </div>
     </div>
 </div>
 
+<!-- Modal para Editar Tarea -->
+<div id="editarTareaModal" class="modal-overlay">
+    <div class="modal" style="max-width: 500px;">
+        <div class="modal-header">
+            <h2 class="modal-title"><i class="bi bi-pencil-square"></i> Editar Tarea</h2>
+            <button type="button" class="modal-close" data-modal-close="editarTareaModal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="editTaskForm">
+                <input type="hidden" id="editTaskId" name="IdTarea" />
+                <div class="detail-group">
+                    <label class="detail-label" for="editTaskName">Nombre de la Tarea</label>
+                    <input id="editTaskName" name="NombreTarea" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" required />
+                    <div class="invalid-feedback" style="color: red; font-size: 0.8rem; margin-top: 5px; display: none;">El nombre es obligatorio</div>
+                </div>
+                <div class="detail-group">
+                    <label class="detail-label" for="editTaskDueDate">Fecha de Vencimiento</label>
+                    <input id="editTaskDueDate" name="FechaVencimiento" type="date" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" required />
+                    <div class="invalid-feedback" style="color: red; font-size: 0.8rem; margin-top: 5px; display: none;">La fecha de vencimiento es obligatoria</div>
+                </div>
+                <input type="hidden" id="editTaskStatus" name="Estado" value="Urgente" />
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-cancel-modal" data-modal-close="editarTareaModal">Cancelar</button>
+            <button type="button" id="btnUpdateTask" class="btn new-task-btn" style="border: none;">
+                <i class="bi bi-save"></i> Guardar Cambios
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Contenedor para notificaciones -->
+<div class="notifications-container" id="notificationsContainer"></div>
+
+<!-- Token anti-falsificación para solicitudes AJAX -->
+<form id="__AjaxAntiForgeryForm" method="post" style="display: none;">
+    @Html.AntiForgeryToken()
+</form>
+
 @section Scripts {
+    <script src="~/js/modal-handler.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Código específico para la página de tareas urgentes
+            // Establecer fecha de vencimiento por defecto (hoy)
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            let mm = today.getMonth() + 1;
+            let dd = today.getDate();
+            if (dd < 10) dd = '0' + dd;
+            if (mm < 10) mm = '0' + mm;
+            document.getElementById('taskDueDate').value = `${yyyy}-${mm}-${dd}`;
+            
+            // Editar tarea - Cargar datos
+            document.querySelectorAll('.btn-edit-task').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const taskId = parseInt(this.getAttribute('data-task-id'));
+                    loadTaskForEditing(taskId);
+                });
+            });
+            
+            async function loadTaskForEditing(taskId) {
+                try {
+                    const response = await fetch(`/Index?handler=TareaPorId&id=${taskId}`);
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.success) {
+                            const tarea = data.tarea;
+                            
+                            // Rellenar el formulario de edición
+                            document.getElementById('editTaskId').value = tarea.idTarea;
+                            document.getElementById('editTaskName').value = tarea.nombreTarea;
+                            document.getElementById('editTaskDueDate').value = tarea.fechaVencimiento.split('T')[0];
+                        }
+                    } else {
+                        showCustomNotification('Error al cargar los datos de la tarea', 'danger');
+                    }
+                } catch (error) {
+                    console.error('Error al cargar la tarea:', error);
+                    showCustomNotification('Error al cargar los datos de la tarea', 'danger');
+                }
+            }
+            
+            // Evento para guardar una nueva tarea
+            document.getElementById('btnSaveTask').addEventListener('click', async () => {
+                // Validar formulario
+                const nombre = document.getElementById('taskName').value.trim();
+                const fechaVencimiento = document.getElementById('taskDueDate').value;
+                const estado = "Urgente"; // Siempre urgente en esta página
+                
+                if (!nombre) {
+                    document.getElementById('taskName').nextElementSibling.style.display = 'block';
+                    return;
+                }
+                
+                if (!fechaVencimiento) {
+                    document.getElementById('taskDueDate').nextElementSibling.style.display = 'block';
+                    return;
+                }
+                
+                // Deshabilitar botón mientras se procesa
+                const btnSaveTask = document.getElementById('btnSaveTask');
+                btnSaveTask.disabled = true;
+                btnSaveTask.innerHTML = '<span class="spinner"></span> Guardando...';
+                
+                try {
+                    const nuevaTarea = {
+                        nombreTarea: nombre,
+                        fechaVencimiento: fechaVencimiento,
+                        estado: estado
+                    };
+                    
+                    const response = await fetch('/Index?handler=AgregarTarea', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                        },
+                        body: JSON.stringify(nuevaTarea)
+                    });
+                    
+                    if (response.ok) {
+                        closeModal('nuevaTareaModal');
+                        showCustomNotification('Tarea urgente agregada correctamente', 'success');
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        showCustomNotification('Error al guardar la tarea', 'danger');
+                    }
+                } catch (error) {
+                    console.error('Error al guardar la tarea:', error);
+                    showCustomNotification('Error al guardar la tarea', 'danger');
+                } finally {
+                    btnSaveTask.disabled = false;
+                    btnSaveTask.innerHTML = '<i class="bi bi-plus-lg"></i> Agregar Tarea Urgente';
+                }
+            });
+            
+            // Actualizar tarea
+            document.getElementById('btnUpdateTask').addEventListener('click', async () => {
+                // Validar formulario
+                const id = parseInt(document.getElementById('editTaskId').value);
+                const nombre = document.getElementById('editTaskName').value.trim();
+                const fechaVencimiento = document.getElementById('editTaskDueDate').value;
+                const estado = "Urgente"; // Siempre urgente en esta página
+                
+                if (!nombre) {
+                    document.getElementById('editTaskName').nextElementSibling.style.display = 'block';
+                    return;
+                }
+                
+                if (!fechaVencimiento) {
+                    document.getElementById('editTaskDueDate').nextElementSibling.style.display = 'block';
+                    return;
+                }
+                
+                // Deshabilitar botón mientras se procesa
+                const btnUpdateTask = document.getElementById('btnUpdateTask');
+                btnUpdateTask.disabled = true;
+                btnUpdateTask.innerHTML = '<span class="spinner"></span> Guardando...';
+                
+                try {
+                    const tareaActualizada = {
+                        idTarea: id,
+                        nombreTarea: nombre,
+                        fechaVencimiento: fechaVencimiento,
+                        estado: estado
+                    };
+                    
+                    const response = await fetch('/Index?handler=ActualizarTarea', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                        },
+                        body: JSON.stringify(tareaActualizada)
+                    });
+                    
+                    if (response.ok) {
+                        closeModal('editarTareaModal');
+                        showCustomNotification('Tarea actualizada correctamente', 'success');
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        showCustomNotification('Error al actualizar la tarea', 'danger');
+                    }
+                } catch (error) {
+                    console.error('Error al actualizar la tarea:', error);
+                    showCustomNotification('Error al actualizar la tarea', 'danger');
+                } finally {
+                    btnUpdateTask.disabled = false;
+                    btnUpdateTask.innerHTML = '<i class="bi bi-save"></i> Guardar Cambios';
+                }
+            });
+            
+            // Eventos de validación de formulario
+            document.getElementById('taskName').addEventListener('input', function() {
+                this.nextElementSibling.style.display = 'none';
+            });
+            
+            document.getElementById('taskDueDate').addEventListener('input', function() {
+                this.nextElementSibling.style.display = 'none';
+            });
+            
+            document.getElementById('editTaskName')?.addEventListener('input', function() {
+                this.nextElementSibling.style.display = 'none';
+            });
+            
+            document.getElementById('editTaskDueDate')?.addEventListener('input', function() {
+                this.nextElementSibling.style.display = 'none';
+            });
+            
+            // Eliminar tarea
+            document.querySelectorAll('.btn-delete-task').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const taskId = parseInt(this.getAttribute('data-task-id'));
+                    if (confirm('¿Estás seguro de que quieres eliminar esta tarea?')) {
+                        deleteTask(taskId);
+                    }
+                });
+            });
+            
+            async function deleteTask(taskId) {
+                try {
+                    const row = document.querySelector(`.task-row[data-task-id="${taskId}"]`);
+                    row.classList.add('removing');
+                    
+                    const response = await fetch(`/Index?handler=EliminarTarea&id=${taskId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        setTimeout(() => {
+                            row.remove();
+                            if (document.querySelectorAll('.tasks-table tbody tr').length === 0) {
+                                location.reload();
+                            }
+                        }, 500);
+                        showCustomNotification('Tarea eliminada correctamente', 'success');
+                    } else {
+                        showCustomNotification('Error al eliminar la tarea', 'danger');
+                        row.classList.remove('removing');
+                    }
+                } catch (error) {
+                    console.error('Error al eliminar la tarea:', error);
+                    showCustomNotification('Error al eliminar la tarea', 'danger');
+                }
+            }
+            
+            // Función para mostrar notificaciones personalizadas
+            function showCustomNotification(message, type = 'success') {
+                const container = document.getElementById('notificationsContainer');
+                
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                
+                notification.innerHTML = `
+                    <span>${message}</span>
+                    <button type="button" class="notification-close">&times;</button>
+                `;
+                
+                container.appendChild(notification);
+                
+                // Manejar el cierre de la notificación
+                const closeBtn = notification.querySelector('.notification-close');
+                closeBtn.addEventListener('click', function() {
+                    notification.style.opacity = '0';
+                    setTimeout(() => notification.remove(), 300);
+                });
+                
+                // Auto-ocultar después de 3 segundos
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
         });
     </script>
 }

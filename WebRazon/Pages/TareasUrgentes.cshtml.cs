@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using WebRazon.Models;
 
 namespace WebRazon.Pages
 {
@@ -15,36 +16,33 @@ namespace WebRazon.Pages
             _logger = logger;
         }
 
-        public List<TaskItem> UrgentTasks { get; private set; }
+        public List<Tarea> TareasUrgentes { get; private set; }
 
         [BindProperty]
-        public TaskItem NewTask { get; set; }
+        public Tarea NuevaTarea { get; set; }
 
         public void OnGet()
         {
             // Inicializar con tareas urgentes de ejemplo
-            UrgentTasks = new List<TaskItem>
+            TareasUrgentes = new List<Tarea>
             {
-                new TaskItem { 
-                    Id = 3, 
-                    Title = "Corregir error en módulo de inicio de sesión", 
-                    Description = "Solucionar los problemas reportados en el inicio de sesión", 
-                    DueDate = DateTime.Now.AddDays(1), 
-                    Status = "Urgente" 
+                new Tarea { 
+                    IdTarea = 3, 
+                    NombreTarea = "Corregir error en módulo de inicio de sesión", 
+                    FechaVencimiento = DateTime.Now.AddDays(1), 
+                    Estado = "Urgente" 
                 },
-                new TaskItem { 
-                    Id = 6, 
-                    Title = "Presentación para cliente", 
-                    Description = "Finalizar la presentación para la reunión con el cliente", 
-                    DueDate = DateTime.Now.AddDays(1), 
-                    Status = "Urgente" 
+                new Tarea { 
+                    IdTarea = 6, 
+                    NombreTarea = "Presentación para cliente", 
+                    FechaVencimiento = DateTime.Now.AddDays(1), 
+                    Estado = "Urgente" 
                 },
-                new TaskItem { 
-                    Id = 8, 
-                    Title = "Resolver bug crítico en producción", 
-                    Description = "Hay un error que impide que los usuarios accedan al sistema", 
-                    DueDate = DateTime.Now.AddHours(4), 
-                    Status = "Urgente" 
+                new Tarea { 
+                    IdTarea = 8, 
+                    NombreTarea = "Resolver bug crítico en producción", 
+                    FechaVencimiento = DateTime.Now.AddHours(4), 
+                    Estado = "Urgente" 
                 }
             };
         }

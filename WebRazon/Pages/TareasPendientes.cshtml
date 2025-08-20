@@ -4,52 +4,49 @@
     ViewData["Title"] = "Tareas Pendientes";
 }
 
-<div class="container-fluid px-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="fs-2" style="color: var(--purple-600);"><i class="bi bi-hourglass me-2" style="color: var(--purple-500);"></i>Tareas Pendientes</h1>
-        <div>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#nuevaTareaModal">
-                <i class="bi bi-plus-circle"></i> Nueva Tarea
-            </button>
-        </div>
+<link rel="stylesheet" href="~/css/custom-task-pages.css" />
+<link rel="stylesheet" href="~/css/modal-notifications.css" />
+
+<div class="tasks-page pending-task-theme">
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="bi bi-hourglass"></i>
+            Tareas Pendientes
+        </h1>
+        <button class="new-task-btn" id="btnNuevaTarea">
+            <i class="bi bi-plus-circle"></i> Nueva Tarea
+        </button>
     </div>
 
     <!-- Lista de Tareas Pendientes -->
-    <div class="card mb-4" style="border-color: var(--purple-200);">
-        <div class="card-header bg-info">
-            <div class="d-flex justify-content-between align-items-center">
-                <div><i class="bi bi-hourglass me-2"></i>Lista de Pendientes</div>
-            </div>
+    <div class="tasks-card">
+        <div class="tasks-card-header">
+            <span><i class="bi bi-hourglass"></i>Lista de Pendientes</span>
         </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover">
+        <div class="tasks-card-body">
+            @if (Model.TareasPendientes.Any())
+            {
+                <table class="tasks-table">
                     <thead>
                         <tr>
-                            <th>Título</th>
+                            <th>Nombre</th>
                             <th>Fecha de Vencimiento</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var task in Model.PendingTasks)
+                        @foreach (var tarea in Model.TareasPendientes)
                         {
-                            <tr>
-                                <td>@task.Title</td>
-                                <td>@task.DueDate.ToString("yyyy-MM-dd")</td>
+                            <tr class="task-row" data-task-id="@tarea.IdTarea">
+                                <td>@tarea.NombreTarea</td>
+                                <td>@tarea.FechaVencimiento.ToString("yyyy-MM-dd")</td>
                                 <td>
-                                    <div class="btn-group">
-                                        <button class="btn btn-sm btn-outline-primary" title="Editar">
+                                    <div class="actions-group">
+                                        <button class="btn btn-sm btn-outline-primary btn-edit-task" title="Editar" data-task-id="@tarea.IdTarea">
                                             <i class="bi bi-pencil-square"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-outline-success" title="Completar">
-                                            <i class="bi bi-check-lg"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                        <button class="btn btn-sm btn-outline-danger btn-delete-task" title="Eliminar" data-task-id="@tarea.IdTarea">
                                             <i class="bi bi-trash"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-info" title="Ver detalles">
-                                            <i class="bi bi-info-circle"></i>
                                         </button>
                                     </div>
                                 </td>
@@ -57,64 +54,221 @@
                         }
                     </tbody>
                 </table>
-            </div>
+            }
+            else
+            {
+                <div class="empty-tasks-message">
+                    <i class="bi bi-info-circle"></i>
+                    <span>No hay tareas pendientes en este momento.</span>
+                </div>
+            }
         </div>
     </div>
 </div>
 
 <!-- Modal para Nueva Tarea -->
-<div class="modal fade" id="nuevaTareaModal" tabindex="-1" aria-labelledby="nuevaTareaModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header bg-info">
-                <h5 class="modal-title" id="nuevaTareaModalLabel">
-                    <i class="bi bi-plus-circle me-2"></i>Agregar Nueva Tarea Pendiente
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form method="post">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label asp-for="NewTask.Title" class="form-label">Título de la Tarea</label>
-                                <input asp-for="NewTask.Title" class="form-control" required />
-                            </div>
-                            <div class="form-group mb-3">
-                                <label asp-for="NewTask.Description" class="form-label">Descripción</label>
-                                <textarea asp-for="NewTask.Description" class="form-control" rows="3"></textarea>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label asp-for="NewTask.DueDate" class="form-label">Fecha de Vencimiento</label>
-                                <input asp-for="NewTask.DueDate" type="date" class="form-control" required />
-                            </div>
-                            <div class="form-group mb-3">
-                                <label class="form-label">Archivo Adjunto (opcional)</label>
-                                <input type="file" class="form-control" />
-                                <div class="form-text">Sube cualquier archivo relevante para esta tarea</div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle me-1"></i> Cancelar
-                </button>
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-plus-lg me-1"></i> Agregar Tarea
-                </button>
-            </div>
+<div id="nuevaTareaModal" class="modal-overlay">
+    <div class="modal" style="max-width: 500px;">
+        <div class="modal-header">
+            <h2 class="modal-title"><i class="bi bi-plus-circle me-2"></i>Agregar Nueva Tarea</h2>
+            <button type="button" class="modal-close" id="closeNewTaskModal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="newTaskForm">
+                <div class="detail-group">
+                    <label class="detail-label" for="taskName">Nombre de la Tarea</label>
+                    <input id="taskName" name="NombreTarea" class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" required />
+                    <div class="invalid-feedback" style="color: red; font-size: 0.8rem; margin-top: 5px; display: none;">El nombre es obligatorio</div>
+                </div>
+                <div class="detail-group">
+                    <label class="detail-label" for="taskDueDate">Fecha de Vencimiento</label>
+                    <input id="taskDueDate" name="FechaVencimiento" type="date" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;" required />
+                    <div class="invalid-feedback" style="color: red; font-size: 0.8rem; margin-top: 5px; display: none;">La fecha de vencimiento es obligatoria</div>
+                </div>
+                <div class="detail-group">
+                    <label class="detail-label" for="taskStatus">Estado</label>
+                    <select id="taskStatus" name="Estado" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        <option value="Pendiente" selected>Pendiente</option>
+                        <option value="En Progreso">En Progreso</option>
+                        <option value="Urgente">Urgente</option>
+                        <option value="Completada">Completada</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="cancelNewTask">Cancelar</button>
+            <button type="button" class="btn new-task-btn" id="btnSaveTask" style="border: none;">
+                <i class="bi bi-plus-lg"></i> Agregar Tarea
+            </button>
         </div>
     </div>
 </div>
 
+<!-- Contenedor para notificaciones -->
+<div class="notifications-container" id="notificationsContainer"></div>
+
+<!-- Token anti-falsificación para solicitudes AJAX -->
+<form id="__AjaxAntiForgeryForm" method="post" style="display: none;">
+    @Html.AntiForgeryToken()
+</form>
+
 @section Scripts {
+    <script src="~/js/modal-handler.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Aquí se pueden añadir interacciones adicionales específicas para tareas pendientes
+            // Botones para abrir/cerrar modales
+            const btnNuevaTarea = document.getElementById('btnNuevaTarea');
+            const closeNewTaskModal = document.getElementById('closeNewTaskModal');
+            const cancelNewTask = document.getElementById('cancelNewTask');
+            const btnSaveTask = document.getElementById('btnSaveTask');
+            
+            // Abrir modal de nueva tarea
+            btnNuevaTarea.addEventListener('click', () => openModal('nuevaTareaModal'));
+            closeNewTaskModal.addEventListener('click', () => closeModal('nuevaTareaModal'));
+            cancelNewTask.addEventListener('click', () => closeModal('nuevaTareaModal'));
+            
+            // Evento para guardar una nueva tarea
+            btnSaveTask.addEventListener('click', async () => {
+                // Validar formulario
+                const nombre = document.getElementById('taskName').value.trim();
+                const fechaVencimiento = document.getElementById('taskDueDate').value;
+                const estado = document.getElementById('taskStatus').value;
+                
+                if (!nombre) {
+                    document.getElementById('taskName').nextElementSibling.style.display = 'block';
+                    return;
+                }
+                
+                if (!fechaVencimiento) {
+                    document.getElementById('taskDueDate').nextElementSibling.style.display = 'block';
+                    return;
+                }
+                
+                // Deshabilitar botón mientras se procesa
+                btnSaveTask.disabled = true;
+                btnSaveTask.innerHTML = '<span class="spinner"></span> Guardando...';
+                
+                try {
+                    const nuevaTarea = {
+                        nombreTarea: nombre,
+                        fechaVencimiento: fechaVencimiento,
+                        estado: estado
+                    };
+                    
+                    const response = await fetch('/Index?handler=AgregarTarea', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                        },
+                        body: JSON.stringify(nuevaTarea)
+                    });
+                    
+                    if (response.ok) {
+                        closeModal('nuevaTareaModal');
+                        showCustomNotification('Tarea agregada correctamente', 'success');
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        showCustomNotification('Error al guardar la tarea', 'danger');
+                    }
+                } catch (error) {
+                    console.error('Error al guardar la tarea:', error);
+                    showCustomNotification('Error al guardar la tarea', 'danger');
+                } finally {
+                    btnSaveTask.disabled = false;
+                    btnSaveTask.innerHTML = '<i class="bi bi-plus-lg"></i> Agregar Tarea';
+                }
+            });
+            
+            // Eventos de validación de formulario
+            document.getElementById('taskName').addEventListener('input', function() {
+                this.nextElementSibling.style.display = 'none';
+            });
+            
+            document.getElementById('taskDueDate').addEventListener('input', function() {
+                this.nextElementSibling.style.display = 'none';
+            });
+            
+            // Eliminar tarea
+            document.querySelectorAll('.btn-delete-task').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const taskId = parseInt(this.getAttribute('data-task-id'));
+                    if (confirm('¿Estás seguro de que quieres eliminar esta tarea?')) {
+                        deleteTask(taskId);
+                    }
+                });
+            });
+            
+            async function deleteTask(taskId) {
+                try {
+                    const row = document.querySelector(`.task-row[data-task-id="${taskId}"]`);
+                    row.classList.add('removing');
+                    
+                    const response = await fetch(`/Index?handler=EliminarTarea&id=${taskId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        setTimeout(() => {
+                            row.remove();
+                            if (document.querySelectorAll('.tasks-table tbody tr').length === 0) {
+                                location.reload();
+                            }
+                        }, 500);
+                        showCustomNotification('Tarea eliminada correctamente', 'success');
+                    } else {
+                        showCustomNotification('Error al eliminar la tarea', 'danger');
+                        row.classList.remove('removing');
+                    }
+                } catch (error) {
+                    console.error('Error al eliminar la tarea:', error);
+                    showCustomNotification('Error al eliminar la tarea', 'danger');
+                }
+            }
+            
+            // Función para mostrar notificaciones personalizadas
+            function showCustomNotification(message, type = 'success') {
+                const container = document.getElementById('notificationsContainer');
+                
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                
+                notification.innerHTML = `
+                    <span>${message}</span>
+                    <button type="button" class="notification-close">&times;</button>
+                `;
+                
+                container.appendChild(notification);
+                
+                // Manejar el cierre de la notificación
+                const closeBtn = notification.querySelector('.notification-close');
+                closeBtn.addEventListener('click', function() {
+                    notification.style.opacity = '0';
+                    setTimeout(() => notification.remove(), 300);
+                });
+                
+                // Auto-ocultar después de 3 segundos
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
+            
+            // Inicializar fecha para nuevas tareas
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            let mm = today.getMonth() + 1;
+            let dd = today.getDate();
+            
+            if (dd < 10) dd = '0' + dd;
+            if (mm < 10) mm = '0' + mm;
+            
+            document.getElementById('taskDueDate').value = `${yyyy}-${mm}-${dd}`;
         });
     </script>
 }

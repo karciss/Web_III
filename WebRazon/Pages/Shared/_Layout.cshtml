@@ -4,114 +4,99 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Gestor de Tareas</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/WebRazon.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/custom-task-pages.css" asp-append-version="true" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-        }
-    </style>
 </head>
 <body>
-    <!-- Barra de navegación superior -->
-    <nav class="navbar navbar-expand navbar-dark bg-primary navbar-fixed-top">
-        <div class="container-fluid">
+    <nav class="main-navbar">
+        <div class="navbar-container">
             <a class="navbar-brand" asp-area="" asp-page="/Index">
-                <i class="bi bi-check2-square me-2" style="color: var(--green-300);"></i>Gestor de Tareas
+                <i class="bi bi-check2-square" style="color: var(--green-300);"></i>Gestor de Tareas
             </a>
             
-            <!-- Botón de perfil a la derecha -->
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item me-2">
-                    <button class="navbar-toggler-sidebar btn btn-outline-light" id="sidebar-toggle">
-                        <i class="bi bi-list"></i>
-                    </button>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="navbar-right">
+                <button class="sidebar-toggle" id="sidebar-toggle">
+                    <i class="bi bi-list"></i>
+                </button>
+                <div class="profile-dropdown">
+                    <button class="profile-button" id="profileDropdown">
                         <i class="bi bi-person-circle" style="color: var(--green-500);"></i> Perfil
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" style="border: 1px solid var(--purple-200);">
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-gear" style="color: var(--purple-500);"></i> Configuración</a></li>
-                        <li><hr class="dropdown-divider" style="border-color: var(--green-200);"></li>
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right" style="color: var(--purple-500);"></i> Cerrar Sesión</a></li>
-                    </ul>
-                </li>
-            </ul>
+                    </button>
+                    <div class="dropdown-menu" id="profileMenu" style="border: 1px solid var(--purple-200);">
+                        <a class="dropdown-item" href="#"><i class="bi bi-gear" style="color: var(--purple-500);"></i> Configuración</a>
+                        <div class="dropdown-divider" style="border-color: var(--green-200);"></div>
+                        <a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right" style="color: var(--purple-500);"></i> Cerrar Sesión</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </nav>
 
-    <!-- Sidebar Vertical -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <i class="bi bi-list-task me-2" style="color: var(--purple-600);"></i> Categorías
+            <i class="bi bi-list-task" style="color: var(--purple-600);"></i> Categorías
         </div>
-        <ul class="navbar-nav flex-column">
-            <li class="nav-item">
-                <a class="nav-link @(ViewContext.RouteData.Values["Page"].ToString() == "/Index" ? "active" : "")" asp-area="" asp-page="/Index">
+        <ul class="sidebar-nav">
+            <li class="sidebar-item">
+                <a class="sidebar-link @(ViewContext.RouteData.Values["Page"].ToString() == "/Index" ? "active" : "")" asp-area="" asp-page="/Index">
                     <i class="bi bi-house-door"></i> Inicio
                 </a>
             </li>
             <div class="separator"></div>
-            <li class="nav-item">
-                <a class="nav-link @(ViewContext.RouteData.Values["Page"].ToString() == "/TareasPendientes" ? "active" : "")" asp-area="" asp-page="/TareasPendientes">
+            <li class="sidebar-item">
+                <a class="sidebar-link @(ViewContext.RouteData.Values["Page"].ToString() == "/TareasPendientes" ? "active" : "")" asp-area="" asp-page="/TareasPendientes">
                     <i class="bi bi-hourglass"></i> Tareas Pendientes
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link @(ViewContext.RouteData.Values["Page"].ToString() == "/TareasEnProgreso" ? "active" : "")" asp-area="" asp-page="/TareasEnProgreso">
+            <li class="sidebar-item">
+                <a class="sidebar-link @(ViewContext.RouteData.Values["Page"].ToString() == "/TareasEnProgreso" ? "active" : "")" asp-area="" asp-page="/TareasEnProgreso">
                     <i class="bi bi-arrow-repeat"></i> En Progreso
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link @(ViewContext.RouteData.Values["Page"].ToString() == "/TareasUrgentes" ? "active" : "")" asp-area="" asp-page="/TareasUrgentes">
+            <li class="sidebar-item">
+                <a class="sidebar-link @(ViewContext.RouteData.Values["Page"].ToString() == "/TareasUrgentes" ? "active" : "")" asp-area="" asp-page="/TareasUrgentes">
                     <i class="bi bi-exclamation-triangle"></i> Urgentes
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
+            <li class="sidebar-item">
+                <a class="sidebar-link @(ViewContext.RouteData.Values["Page"].ToString() == "/TareasCompletadas" ? "active" : "")" asp-area="" asp-page="/TareasCompletadas">
                     <i class="bi bi-check-circle"></i> Completadas
                 </a>
             </li>
             <div class="separator"></div>
-            <li class="nav-item">
-                <a class="nav-link @(ViewContext.RouteData.Values["Page"].ToString() == "/Privacy" ? "active" : "")" asp-area="" asp-page="/Privacy">
+            <li class="sidebar-item">
+                <a class="sidebar-link @(ViewContext.RouteData.Values["Page"].ToString() == "/Privacy" ? "active" : "")" asp-area="" asp-page="/Privacy">
                     <i class="bi bi-shield-lock"></i> Privacidad
                 </a>
             </li>
         </ul>
     </div>
 
-    <!-- Contenido principal -->
     <div class="content-wrapper" id="content">
-        <div class="container">
-            <main role="main" class="pb-3">
+        <div class="content-container">
+            <main role="main">
                 @RenderBody()
             </main>
         </div>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
+    <footer class="main-footer">
+        <div class="footer-container">
             &copy; 2025 - Gestor de Tareas - <a asp-area="" asp-page="/Privacy" style="color: var(--purple-600);">Privacidad</a>
         </div>
     </footer>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    
     <script>
-        // JavaScript para controlar la visibilidad del sidebar
         document.addEventListener('DOMContentLoaded', function() {
             const sidebarToggle = document.getElementById('sidebar-toggle');
             const sidebar = document.getElementById('sidebar');
             const content = document.getElementById('content');
+            const profileDropdown = document.getElementById('profileDropdown');
+            const profileMenu = document.getElementById('profileMenu');
             
-            // Verificar si el sidebar debe estar colapsado en dispositivos móviles
             function checkWidth() {
                 if (window.innerWidth < 768) {
                     sidebar.classList.add('collapsed');
@@ -122,21 +107,27 @@
                 }
             }
             
-            // Ejecutar al cargar
             checkWidth();
             
-            // Ejecutar al cambiar el tamaño de la ventana
             window.addEventListener('resize', checkWidth);
             
-            // Toggle del sidebar
             sidebarToggle.addEventListener('click', function() {
                 sidebar.classList.toggle('collapsed');
                 content.classList.toggle('expanded');
             });
 
-            // Marcar el enlace activo en el sidebar
+            profileDropdown.addEventListener('click', function() {
+                profileMenu.classList.toggle('show');
+            });
+            
+            document.addEventListener('click', function(event) {
+                if (!profileDropdown.contains(event.target) && !profileMenu.contains(event.target)) {
+                    profileMenu.classList.remove('show');
+                }
+            });
+
             const currentPath = window.location.pathname;
-            document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+            document.querySelectorAll('.sidebar-link').forEach(link => {
                 if (link.getAttribute('href') === currentPath) {
                     link.classList.add('active');
                 }

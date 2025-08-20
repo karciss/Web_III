@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using WebRazon.Models;
 
 namespace WebRazon.Pages
 {
@@ -15,29 +16,27 @@ namespace WebRazon.Pages
             _logger = logger;
         }
 
-        public List<TaskItem> PendingTasks { get; private set; }
+        public List<Tarea> TareasPendientes { get; private set; }
 
         [BindProperty]
-        public TaskItem NewTask { get; set; }
+        public Tarea NuevaTarea { get; set; }
 
         public void OnGet()
         {
             // Inicializar con tareas pendientes de ejemplo
-            PendingTasks = new List<TaskItem>
+            TareasPendientes = new List<Tarea>
             {
-                new TaskItem { 
-                    Id = 1, 
-                    Title = "Completar propuesta de proyecto", 
-                    Description = "Escribir una propuesta detallada para el nuevo proyecto del cliente", 
-                    DueDate = DateTime.Now.AddDays(3), 
-                    Status = "Pendiente" 
+                new Tarea { 
+                    IdTarea = 1, 
+                    NombreTarea = "Completar propuesta de proyecto", 
+                    FechaVencimiento = DateTime.Now.AddDays(3), 
+                    Estado = "Pendiente" 
                 },
-                new TaskItem { 
-                    Id = 4, 
-                    Title = "Actualizar bibliotecas del proyecto", 
-                    Description = "Actualizar todas las bibliotecas a las últimas versiones", 
-                    DueDate = DateTime.Now.AddDays(7), 
-                    Status = "Pendiente" 
+                new Tarea { 
+                    IdTarea = 4, 
+                    NombreTarea = "Actualizar bibliotecas del proyecto", 
+                    FechaVencimiento = DateTime.Now.AddDays(7), 
+                    Estado = "Pendiente" 
                 }
             };
         }
