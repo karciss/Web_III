@@ -1,0 +1,254 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+  transition: margin-left 0.5s;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Estilos para la barra de navegación */
+.bg-pastel-green {
+  background-color: #B5D99C !important;
+}
+
+.navbar-hamburger {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.hamburger-line {
+  width: 25px;
+  height: 3px;
+  background-color: white;
+  margin: 5px 0;
+}
+
+.sidebar {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  background-color: #E6D7F2; 
+  overflow-x: hidden;
+  transition: all 0.4s ease-in-out;
+  padding-top: 60px;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.sidebar a {
+  padding: 12px 15px;
+  text-decoration: none;
+  font-size: 18px;
+  color: #644980; 
+  display: block;
+  transition: 0.3s;
+  margin: 5px 0;
+}
+
+.sidebar a:hover {
+  color: #B5D99C; 
+  background-color: #F2EAF9;
+  transform: translateX(5px); 
+}
+
+.sidebar a i {
+  margin-right: 12px;
+  width: 20px;
+  text-align: center;
+}
+
+.sidebar-header {
+  padding: 10px 15px 20px 15px;
+  border-bottom: 1px solid #D0BBE4;
+  margin-bottom: 10px;
+}
+
+.sidebar-header h3 {
+  color: #7B5C9A;
+  font-size: 24px;
+  margin: 0;
+  text-align: center;
+  font-weight: 600;
+}
+
+.sidebar .closebtn {
+  position: absolute;
+  top: 10px;
+  right: 25px;
+  font-size: 30px;
+  margin-left: 50px;
+}
+
+/* Clase para el contenido principal */
+#main-content {
+  transition: margin-left 0.5s;
+}
+
+/* Clase cuando el sidebar está abierto */
+.sidebar-open {
+  margin-left: 250px;
+}
+
+/*footer */
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px;
+  text-align: center;
+}
+
+.footer .container {
+  display: flex;
+  justify-content: center;
+}
+
+/* Estilos para la tabla con cabeceras */
+.table {
+  --bs-table-hover-bg: #F2EAF9;
+  --bs-table-hover-color: #644980;
+}
+
+.table thead {
+  background-color: transparent; 
+  border-bottom: 2px solid #7B5C9A;
+}
+
+.table thead th {
+  color: #644980; 
+  font-weight: 600; 
+  border-bottom: none;
+  padding-bottom: 12px; 
+}
+
+
+.table th {
+  background-color: transparent !important;
+  color: #644980 !important;
+}
+
+.card {
+  border-color: #D0BBE4;
+  box-shadow: 0 2px 5px rgba(123, 92, 154, 0.1);
+}
+
+.card-body {
+  border-radius: 0.25rem;
+}
+
+.btn-primary {
+  background-color: #7B5C9A;
+  border-color: #644980;
+}
+
+.btn-primary:hover {
+  background-color: #644980;
+  border-color: #53406C;
+}
+
+/* Nuevos estilos para los badges de estado */
+.badge.bg-pendiente {
+  background-color: #E6D7F2 !important; /* Violeta muy claro */
+  color: #644980;
+}
+
+.badge.bg-proceso {
+  background-color: #7B5C9A !important; /* Violeta medio */
+  color: white;
+}
+
+.badge.bg-completada {
+  background-color: #B5D99C !important; /* Verde pastel */
+  color: #4a6d3b;
+}
+
+.badge.bg-cancelada {
+  background-color: #644980 !important; /* Violeta oscuro */
+  color: white;
+}
+
+/* Estilos para los botones de acción */
+.btn-ver {
+  background-color: #E6D7F2; /* Violeta muy claro */
+  border-color: #D0BBE4;
+  color: #644980;
+}
+
+.btn-ver:hover {
+  background-color: #D0BBE4;
+  border-color: #B9A1D4;
+  color: #53406C;
+}
+
+.btn-editar {
+  background-color: #7B5C9A; /* Violeta medio */
+  border-color: #644980;
+  color: white;
+}
+
+.btn-editar:hover {
+  background-color: #644980;
+  border-color: #53406C;
+  color: white;
+}
+
+.btn-eliminar {
+  background-color: #B5D99C; /* Verde pastel */
+  border-color: #9BC185;
+  color: #4a6d3b;
+}
+
+.btn-eliminar:hover {
+  background-color: #9BC185;
+  border-color: #82A86F;
+  color: #3c5a31;
+}
+
+/* Estilos para la paginación */
+.pagination-violet .page-link {
+  color: #644980;
+  background-color: #fff;
+  border-color: #D0BBE4;
+}
+
+.pagination-violet .page-item.active .page-link {
+  background-color: #7B5C9A;
+  border-color: #7B5C9A;
+  color: white;
+}
+
+.pagination-violet .page-item.disabled .page-link {
+  color: #ccc;
+  background-color: #fff;
+  border-color: #eee;
+}
+
+.pagination-violet .page-link:hover {
+  color: #644980;
+  background-color: #F2EAF9;
+  border-color: #D0BBE4;
+}
+
+.pagination-violet .page-link:focus {
+  box-shadow: 0 0 0 0.25rem rgba(123, 92, 154, 0.25);
+}
