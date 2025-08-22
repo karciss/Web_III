@@ -16,7 +16,10 @@ namespace WebRazon2.Pages
         public List<Tarea> Tareas { get; set; }
         public int PaginaActual { get; set; }
         public int TotalPaginas { get; set; }
-        public int TamanoPagina { get; set; } = 5;
+        public int TamanoPagina { get; set; } = 5; // Valor predeterminado
+        
+        // Lista de opciones para el tamaño de página
+        public List<int> OpcionesTamanoPagina { get; } = new List<int> { 5, 10, 15, 20 };
 
         public IndexModel(ILogger<IndexModel> logger)
         {
@@ -24,8 +27,14 @@ namespace WebRazon2.Pages
             Tareas = new List<Tarea>();
         }
 
-        public void OnGet(int pagina = 1)
+        public void OnGet(int pagina = 1, int tamanoPagina = 5)
         {
+            // Validar y establecer el tamaño de página
+            if (OpcionesTamanoPagina.Contains(tamanoPagina))
+            {
+                TamanoPagina = tamanoPagina;
+            }
+            
             // Ruta al archivo JSON
             string jsonFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "tareas.json");
 
@@ -59,7 +68,7 @@ namespace WebRazon2.Pages
                 .Take(TamanoPagina)
                 .ToList();
                 
-            _logger.LogInformation($"Página {PaginaActual} de {TotalPaginas} cargada con {Tareas.Count} tareas");
+            _logger.LogInformation($"Página {PaginaActual} de {TotalPaginas} cargada con {Tareas.Count} tareas. Tamaño de página: {TamanoPagina}");
         }
     }
 }

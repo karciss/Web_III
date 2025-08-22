@@ -10,7 +10,7 @@
             <h2 style="color: #644980;">Tareas en Proceso</h2>
         </div>
         <div class="col-auto">
-            <button class="btn btn-primary">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#nuevaTareaModal">
                 <i class="fas fa-plus"></i> Nueva Tarea
             </button>
         </div>
@@ -61,36 +61,129 @@
                     </tbody>
                 </table>
                 
-                <!-- paginación -->
-                @if (Model.TotalPaginas > 1)
-                {
-                    <nav>
-                        <ul class="pagination pagination-violet justify-content-center mt-4">
-                            <!-- Botón Anterior -->
-                            <li class="page-item @(Model.PaginaActual == 1 ? "disabled" : "")">
-                                <a class="page-link" asp-page="./EnProceso" asp-route-pagina="@(Model.PaginaActual - 1)" aria-label="Anterior">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                            
-                            <!-- Números de página -->
-                            @for (int i = 1; i <= Model.TotalPaginas; i++)
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <!-- Selector de tamaño de página -->
+                    <div class="items-per-page-selector">
+                        <span class="me-2" style="color: #644980;">Mostrar</span>
+                        <div class="btn-group" role="group">
+                            @foreach (var tamano in Model.OpcionesTamanoPagina)
                             {
-                                <li class="page-item @(i == Model.PaginaActual ? "active" : "")">
-                                    <a class="page-link" asp-page="./EnProceso" asp-route-pagina="@i">@i</a>
-                                </li>
-                            }
-                            
-                            <!-- Botón Siguiente -->
-                            <li class="page-item @(Model.PaginaActual == Model.TotalPaginas ? "disabled" : "")">
-                                <a class="page-link" asp-page="./EnProceso" asp-route-pagina="@(Model.PaginaActual + 1)" aria-label="Siguiente">
-                                    <span aria-hidden="true">&raquo;</span>
+                                <a asp-page="./EnProceso" 
+                                   asp-route-pagina="1" 
+                                   asp-route-tamanoPagina="@tamano" 
+                                   class="btn @(tamano == Model.TamanoPagina ? "btn-editar" : "btn-ver")">
+                                   @tamano
                                 </a>
-                            </li>
-                        </ul>
-                    </nav>
-                }
+                            }
+                        </div>
+                        <span class="ms-2" style="color: #644980;">tareas por página</span>
+                    </div>
+                    
+                    <!-- paginación -->
+                    @if (Model.TotalPaginas > 1)
+                    {
+                        <nav>
+                            <ul class="pagination pagination-violet mb-0">
+                                <!-- Botón Anterior -->
+                                <li class="page-item @(Model.PaginaActual == 1 ? "disabled" : "")">
+                                    <a class="page-link" asp-page="./EnProceso" asp-route-pagina="@(Model.PaginaActual - 1)" asp-route-tamanoPagina="@Model.TamanoPagina" aria-label="Anterior">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                
+                                <!-- Números de página -->
+                                @for (int i = 1; i <= Model.TotalPaginas; i++)
+                                {
+                                    <li class="page-item @(i == Model.PaginaActual ? "active" : "")">
+                                        <a class="page-link" asp-page="./EnProceso" asp-route-pagina="@i" asp-route-tamanoPagina="@Model.TamanoPagina">@i</a>
+                                    </li>
+                                }
+                                
+                                <!-- Botón Siguiente -->
+                                <li class="page-item @(Model.PaginaActual == Model.TotalPaginas ? "disabled" : "")">
+                                    <a class="page-link" asp-page="./EnProceso" asp-route-pagina="@(Model.PaginaActual + 1)" asp-route-tamanoPagina="@Model.TamanoPagina" aria-label="Siguiente">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    }
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Modal para nueva tarea -->
+<div class="modal fade" id="nuevaTareaModal" tabindex="-1" aria-labelledby="nuevaTareaModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="nuevaTareaModalLabel">Nueva Tarea</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formNuevaTarea">
+                    <div class="mb-3">
+                        <label for="nombreTarea" class="form-label">Nombre de la Tarea</label>
+                        <input type="text" class="form-control" id="nombreTarea" name="nombreTarea" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fechaVencimiento" class="form-label">Fecha de Vencimiento</label>
+                        <input type="date" class="form-control" id="fechaVencimiento" name="fechaVencimiento" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="estadoTarea" class="form-label">Estado</label>
+                        <select class="form-select" id="estadoTarea" name="estadoTarea" required>
+                            <option value="">Seleccione el estado</option>
+                            <option value="En Proceso">En Proceso</option>
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="Completa">Completa</option>
+                        </select>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Guardar Tarea</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Manejar el envío del formulario para nueva tarea
+            $('#formNuevaTarea').on('submit', function (e) {
+                e.preventDefault();
+                
+                // Obtener los datos del formulario
+                var formData = {
+                    nombreTarea: $('#nombreTarea').val(),
+                    fechaVencimiento: $('#fechaVencimiento').val(),
+                    estadoTarea: $('#estadoTarea').val()
+                };
+                
+                // Enviar los datos a la página correspondiente para guardar la nueva tarea
+                $.ajax({
+                    url: '/ruta/a/tu-metodo-para-guardar-tarea', // Cambia esto a la URL correcta
+                    type: 'POST',
+                    data: JSON.stringify(formData),
+                    contentType: 'application/json',
+                    success: function (response) {
+                        // Cerrar el modal
+                        $('#nuevaTareaModal').modal('hide');
+                        
+                        // Actualizar la tabla de tareas (puedes hacerlo recargando la página o actualizando solo la tabla)
+                        location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        // Manejar errores aquí
+                        console.error(error);
+                        alert('Ocurrió un error al guardar la tarea. Inténtalo de nuevo.');
+                    }
+                });
+            });
+        });
+    </script>
+}

@@ -16,7 +16,10 @@ namespace WebRazon2.Pages
         public List<Tarea> Tareas { get; set; }
         public int PaginaActual { get; set; }
         public int TotalPaginas { get; set; }
-        public int TamanoPagina { get; set; } = 5;
+        public int TamanoPagina { get; set; } = 5; // Valor predeterminado
+
+        // Lista de opciones para el tamaño de página
+        public List<int> OpcionesTamanoPagina { get; } = new List<int> { 5, 10, 15, 20 };
 
         public PendientesModel(ILogger<PendientesModel> logger)
         {
@@ -24,17 +27,23 @@ namespace WebRazon2.Pages
             Tareas = new List<Tarea>();
         }
 
-        public void OnGet(int pagina = 1)
+        public void OnGet(int pagina = 1, int tamanoPagina = 5)
         {
+            // Validar y establecer el tamaño de página
+            if (OpcionesTamanoPagina.Contains(tamanoPagina))
+            {
+                TamanoPagina = tamanoPagina;
+            }
+
             // Ruta al archivo JSON
             string jsonFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "tareas.json");
 
             // Leer el JSON y deserializarlo
             var jsonContent = System.IO.File.ReadAllText(jsonFilePath);
-            var todasLasTareas = JsonSerializer.Deserialize<List<Tarea>>(jsonContent, 
-                new JsonSerializerOptions 
-                { 
-                    PropertyNameCaseInsensitive = true 
+            var todasLasTareas = JsonSerializer.Deserialize<List<Tarea>>(jsonContent,
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
                 });
 
             if (todasLasTareas == null)
@@ -51,7 +60,7 @@ namespace WebRazon2.Pages
             // Lógica de paginación
             PaginaActual = pagina < 1 ? 1 : pagina;
             TotalPaginas = (int)Math.Ceiling(tareasPendientes.Count / (double)TamanoPagina);
-            
+
             // Asegurarse de que la página actual no exceda el total de páginas
             if (PaginaActual > TotalPaginas && TotalPaginas > 0)
             {
@@ -63,8 +72,8 @@ namespace WebRazon2.Pages
                 .Skip((PaginaActual - 1) * TamanoPagina)
                 .Take(TamanoPagina)
                 .ToList();
-                
-            _logger.LogInformation($"Página {PaginaActual} de {TotalPaginas} cargada con {Tareas.Count} tareas pendientes");
+
+            _logger.LogInformation($"Página {PaginaActual} de {TotalPaginas} cargada con {Tareas.Count} tareas pendientes. Tamaño de página: {TamanoPagina}");
         }
     }
 }

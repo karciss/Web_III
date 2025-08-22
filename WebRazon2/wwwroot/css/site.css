@@ -23,7 +23,7 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Estilos para la barra de navegación */
+/* Estilos para la barra de navegaciion */
 .bg-pastel-green {
   background-color: #B5D99C !important;
 }
@@ -103,7 +103,7 @@ body {
   transition: margin-left 0.5s;
 }
 
-/* Clase cuando el sidebar está abierto */
+/* Clase cuando el sidebar esta abierto */
 .sidebar-open {
   margin-left: 250px;
 }
@@ -168,28 +168,28 @@ body {
 
 /* Nuevos estilos para los badges de estado */
 .badge.bg-pendiente {
-  background-color: #E6D7F2 !important; /* Violeta muy claro */
+  background-color: #E6D7F2 !important;
   color: #644980;
 }
 
 .badge.bg-proceso {
-  background-color: #7B5C9A !important; /* Violeta medio */
+  background-color: #7B5C9A !important; 
   color: white;
 }
 
 .badge.bg-completada {
-  background-color: #B5D99C !important; /* Verde pastel */
+  background-color: #B5D99C !important; 
   color: #4a6d3b;
 }
 
 .badge.bg-cancelada {
-  background-color: #644980 !important; /* Violeta oscuro */
+  background-color: #644980 !important; 
   color: white;
 }
 
-/* Estilos para los botones de acción */
+/* Estilos para los botones de accion */
 .btn-ver {
-  background-color: #E6D7F2; /* Violeta muy claro */
+  background-color: #E6D7F2; 
   border-color: #D0BBE4;
   color: #644980;
 }
@@ -201,7 +201,7 @@ body {
 }
 
 .btn-editar {
-  background-color: #7B5C9A; /* Violeta medio */
+  background-color: #7B5C9A; 
   border-color: #644980;
   color: white;
 }
@@ -213,7 +213,7 @@ body {
 }
 
 .btn-eliminar {
-  background-color: #B5D99C; /* Verde pastel */
+  background-color: #B5D99C; 
   border-color: #9BC185;
   color: #4a6d3b;
 }
@@ -224,7 +224,7 @@ body {
   color: #3c5a31;
 }
 
-/* Estilos para la paginación */
+/* Estilos para la paginacion */
 .pagination-violet .page-link {
   color: #644980;
   background-color: #fff;
@@ -252,3 +252,99 @@ body {
 .pagination-violet .page-link:focus {
   box-shadow: 0 0 0 0.25rem rgba(123, 92, 154, 0.25);
 }
+
+/* Estilos para el selector de tamaño de pagina */
+.items-per-page-selector {
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.items-per-page-selector .btn-group .btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.85rem;
+  border-radius: 0;
+}
+
+.items-per-page-selector .btn-group .btn:first-child {
+  border-top-left-radius: 0.25rem;
+  border-bottom-left-radius: 0.25rem;
+}
+
+.items-per-page-selector .btn-group .btn:last-child {
+  border-top-right-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
+}
+
+.items-per-page-selector .btn-ver {
+  background-color: #F2EAF9;
+  border-color: #D0BBE4;
+}
+
+@media (max-width: 768px) {
+  .d-flex.justify-content-between {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .items-per-page-selector {
+    margin-bottom: 1rem;
+    justify-content: center;
+  }
+}
+
+/* Estilos para el modal de nueva tarea */
+.modal-violet .modal-header {
+  background-color: #7B5C9A;
+  color: white;
+  border-bottom: none;
+}
+
+.modal-violet .modal-title {
+  font-weight: 500;
+}
+
+.modal-violet .modal-footer {
+  border-top: 1px solid #E6D7F2;
+  padding: 1rem;
+}
+
+.modal-violet .btn-close {
+  color: white;
+  opacity: 0.8;
+  filter: brightness(5);
+}
+
+.modal-violet .btn-close:hover {
+  opacity: 1;
+}
+
+.form-control-violet {
+  border-color: #D0BBE4;
+}
+
+.form-control-violet:focus {
+  border-color: #7B5C9A;
+  box-shadow: 0 0 0 0.25rem rgba(123, 92, 154, 0.25);
+}
+
+.form-label {
+  color: #644980;
+  font-weight: 500;
+}
+
+.form-check-input:checked {
+  background-color: #7B5C9A;
+  border-color: #644980;
+}
+
+.priority-selector {
+  display: flex;
+  gap: 1rem;
+}
+
+.priority-selector .form-check-label {
+  font-weight: normal;
+  color: #644980;
+}
+

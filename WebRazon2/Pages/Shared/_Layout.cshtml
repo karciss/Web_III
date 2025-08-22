@@ -49,6 +49,51 @@
             </div>
         </footer>
     </div>
+    
+    <!-- Modal para Nueva Tarea-->
+    <div class="modal fade" id="nuevaTareaModal" tabindex="-1" aria-labelledby="nuevaTareaModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content modal-violet">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="nuevaTareaModalLabel">
+                        <i class="fas fa-plus-circle me-2"></i>
+                        Nueva Tarea
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        
+                        <div class="mb-3">
+                            <label for="nombreTarea" class="form-label">Nombre de la tarea</label>
+                            <input type="text" class="form-control form-control-violet" id="nombreTarea" name="nombreTarea" placeholder="Ingrese el nombre de la tarea" required>
+                        </div>
+                        
+                        
+                        <div class="mb-3">
+                            <label for="fechaVencimiento" class="form-label">Fecha de Vencimiento</label>
+                            <input type="date" class="form-control form-control-violet" id="fechaVencimiento" name="fechaVencimiento" required>
+                        </div>
+                        
+                       
+                        <div class="mb-3">
+                            <label for="estado" class="form-label">Estado</label>
+                            <select class="form-select form-control-violet" id="estado" name="estado" required>
+                                <option selected value="Pendiente">Pendiente</option>
+                                <option value="En curso">En curso</option>
+                                <option value="Finalizado">Finalizado</option>
+                                <option value="Cancelada">Cancelada</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-ver" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-editar">Guardar Tarea</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
