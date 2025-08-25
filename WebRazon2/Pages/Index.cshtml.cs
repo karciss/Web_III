@@ -16,7 +16,7 @@ namespace WebRazon2.Pages
         public List<Tarea> Tareas { get; set; }
         public int PaginaActual { get; set; }
         public int TotalPaginas { get; set; }
-        public int TamanoPagina { get; set; } = 5; // Valor predeterminado
+        public int TamanoPagina { get; set; } = 5; 
         
         // Lista de opciones para el tamaño de página
         public List<int> OpcionesTamanoPagina { get; } = new List<int> { 5, 10, 15, 20 };
@@ -29,7 +29,6 @@ namespace WebRazon2.Pages
 
         public void OnGet(int pagina = 1, int tamanoPagina = 5)
         {
-            // Validar y establecer el tamaño de página
             if (OpcionesTamanoPagina.Contains(tamanoPagina))
             {
                 TamanoPagina = tamanoPagina;
@@ -52,23 +51,28 @@ namespace WebRazon2.Pages
                 return;
             }
 
-            // Lógica de paginación
-            PaginaActual = pagina < 1 ? 1 : pagina;
-            TotalPaginas = (int)Math.Ceiling(todasLasTareas.Count / (double)TamanoPagina);
+            // solo tareas pendientes y en curso
+            var tareasFiltradas = todasLasTareas.Where(t => 
+                t.estado?.ToLower() == "pendiente" || 
+                t.estado?.ToLower() == "en curso"
+            ).ToList();
             
-            // Asegurarse de que la página actual no exceda el total de páginas
+
+            PaginaActual = pagina < 1 ? 1 : pagina;
+            TotalPaginas = (int)Math.Ceiling(tareasFiltradas.Count / (double)TamanoPagina);
+            
             if (PaginaActual > TotalPaginas && TotalPaginas > 0)
             {
                 PaginaActual = TotalPaginas;
             }
 
             // Obtener solo las tareas para la página actual
-            Tareas = todasLasTareas
+            Tareas = tareasFiltradas
                 .Skip((PaginaActual - 1) * TamanoPagina)
                 .Take(TamanoPagina)
                 .ToList();
                 
-            _logger.LogInformation($"Página {PaginaActual} de {TotalPaginas} cargada con {Tareas.Count} tareas. Tamaño de página: {TamanoPagina}");
+            _logger.LogInformation($"Página {PaginaActual} de {TotalPaginas} cargada con {Tareas.Count} tareas pendientes y en curso. Tamaño de página: {TamanoPagina}");
         }
     }
 }

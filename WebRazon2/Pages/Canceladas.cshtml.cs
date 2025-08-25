@@ -9,19 +9,19 @@ using System;
 
 namespace WebRazon2.Pages
 {
-    public class EnProcesoModel : PageModel
+    public class CanceladasModel : PageModel
     {
-        private readonly ILogger<EnProcesoModel> _logger;
+        private readonly ILogger<CanceladasModel> _logger;
 
         public List<Tarea> Tareas { get; set; }
         public int PaginaActual { get; set; }
         public int TotalPaginas { get; set; }
-        public int TamanoPagina { get; set; } = 5; // Valor predeterminado
-
+        public int TamanoPagina { get; set; } = 5;
+        
         // Lista de opciones para el tamaño de página
         public List<int> OpcionesTamanoPagina { get; } = new List<int> { 5, 10, 15, 20 };
 
-        public EnProcesoModel(ILogger<EnProcesoModel> logger)
+        public CanceladasModel(ILogger<CanceladasModel> logger)
         {
             _logger = logger;
             Tareas = new List<Tarea>();
@@ -29,7 +29,6 @@ namespace WebRazon2.Pages
 
         public void OnGet(int pagina = 1, int tamanoPagina = 5)
         {
-            // Validar y establecer el tamaño de página
             if (OpcionesTamanoPagina.Contains(tamanoPagina))
             {
                 TamanoPagina = tamanoPagina;
@@ -52,28 +51,26 @@ namespace WebRazon2.Pages
                 return;
             }
 
-            // Filtrar solo las tareas en proceso
-            var tareasEnProceso = todasLasTareas
-                .Where(t => t.estado?.ToLower() == "en proceso" || t.estado?.ToLower() == "en curso")
+            // solo las tareas canceladas
+            var tareasCanceladas = todasLasTareas
+                .Where(t => t.estado?.ToLower() == "cancelada")
                 .ToList();
 
-            // Lógica de paginación
             PaginaActual = pagina < 1 ? 1 : pagina;
-            TotalPaginas = (int)Math.Ceiling(tareasEnProceso.Count / (double)TamanoPagina);
+            TotalPaginas = (int)Math.Ceiling(tareasCanceladas.Count / (double)TamanoPagina);
             
-            // Asegurarse de que la página actual no exceda el total de páginas
             if (PaginaActual > TotalPaginas && TotalPaginas > 0)
             {
                 PaginaActual = TotalPaginas;
             }
 
             // Obtener solo las tareas para la página actual
-            Tareas = tareasEnProceso
+            Tareas = tareasCanceladas
                 .Skip((PaginaActual - 1) * TamanoPagina)
                 .Take(TamanoPagina)
                 .ToList();
                 
-            _logger.LogInformation($"Página {PaginaActual} de {TotalPaginas} cargada con {Tareas.Count} tareas en proceso. Tamaño de página: {TamanoPagina}");
+            _logger.LogInformation($"Página {PaginaActual} de {TotalPaginas} cargada con {Tareas.Count} tareas canceladas. Tamaño de página: {TamanoPagina}");
         }
     }
 }

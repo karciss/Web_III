@@ -16,7 +16,7 @@ namespace WebRazon2.Pages
         public List<Tarea> Tareas { get; set; }
         public int PaginaActual { get; set; }
         public int TotalPaginas { get; set; }
-        public int TamanoPagina { get; set; } = 5; // Valor predeterminado
+        public int TamanoPagina { get; set; } = 5;
         
         // Lista de opciones para el tamaño de página
         public List<int> OpcionesTamanoPagina { get; } = new List<int> { 5, 10, 15, 20 };
@@ -29,7 +29,6 @@ namespace WebRazon2.Pages
 
         public void OnGet(int pagina = 1, int tamanoPagina = 5)
         {
-            // Validar y establecer el tamaño de página
             if (OpcionesTamanoPagina.Contains(tamanoPagina))
             {
                 TamanoPagina = tamanoPagina;
@@ -52,16 +51,14 @@ namespace WebRazon2.Pages
                 return;
             }
 
-            // Filtrar solo las tareas completadas
+            // solo las tareas completadas
             var tareasCompletadas = todasLasTareas
                 .Where(t => t.estado?.ToLower() == "finalizado" || t.estado?.ToLower() == "completada")
                 .ToList();
 
-            // Lógica de paginación
             PaginaActual = pagina < 1 ? 1 : pagina;
             TotalPaginas = (int)Math.Ceiling(tareasCompletadas.Count / (double)TamanoPagina);
             
-            // Asegurarse de que la página actual no exceda el total de páginas
             if (PaginaActual > TotalPaginas && TotalPaginas > 0)
             {
                 PaginaActual = TotalPaginas;

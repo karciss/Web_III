@@ -17,9 +17,8 @@
         </div>
         <div class="sidebar-items">
             <a asp-area="" asp-page="/Index"><i class="fas fa-home"></i> <span>Inicio</span></a>
-            <a asp-area="" asp-page="/EnProceso"><i class="fas fa-spinner"></i> <span>En Proceso</span></a>
             <a asp-area="" asp-page="/Completadas"><i class="fas fa-check-circle"></i> <span>Completadas</span></a>
-            <a asp-area="" asp-page="/Pendientes"><i class="fas fa-clock"></i> <span>Pendientes</span></a>
+            <a asp-area="" asp-page="/Canceladas"><i class="fas fa-ban"></i> <span>Canceladas</span></a>
             <a asp-area="" asp-page="/Privacy"><i class="fas fa-shield-alt"></i> <span>Privacidad</span></a>
         </div>
     </div>
@@ -101,7 +100,7 @@
     
     <!-- Scripts para el sidebar -->
     <script>
-        // Variable para saber si el sidebar está abierto o cerrado
+        // sidebar está abierto o cerrado
         var sidebarOpen = false;
         
         function toggleNav() {
